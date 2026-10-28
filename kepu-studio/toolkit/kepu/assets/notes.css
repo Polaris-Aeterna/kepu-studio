@@ -1,0 +1,58 @@
+/* 讲义样式。配色语义沿用《地基之下》：绿 = 完整 / 实情，黄 = 骨架，紫 = 黑箱，红 = 误解，蓝 = 定义与符号。
+   版式按 taste 规则：一个墨色、少量强调色；三档字号；结构靠色条和留白，不靠细线框和阴影；可打印。 */
+:root {
+  --paper: #fbfaf7; --ink: #1d1c1a; --muted: #6b675f; --rule: #e4e0d8;
+  --def: #2d5b8a; --thm: #1d1c1a; --full: #2f7d4f; --sketch: #b48a12; --box: #6e4a9e; --wrong: #b3341f;
+  --l2: #2d5b8a; --l3: #6b675f; --tint: #f1eee8;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --paper: #161514; --ink: #ecebe7; --muted: #a29d94; --rule: #2e2c29; --def: #8fb4e8; --thm: #ecebe7;
+    --full: #6cc390; --sketch: #e2bd52; --box: #b99be0; --wrong: #ec7a63; --l2: #8fb4e8; --l3: #a29d94; --tint: #201f1d;
+  }
+}
+@page { size: A4; margin: 18mm 17mm 20mm; }
+* { box-sizing: border-box; }
+html { background: var(--paper); }
+body { margin: 0; color: var(--ink); background: var(--paper);
+  font: 16px/1.85 "Songti SC", "STSong", "Noto Serif CJK SC", "Source Han Serif SC", serif; }
+.notes { max-width: 760px; margin: 0 auto; padding: 48px 20px 80px; }
+h1 { font: 700 34px/1.25 "PingFang SC", "Microsoft YaHei", sans-serif; margin: 0 0 6px; letter-spacing: .01em; }
+h2 { font: 700 23px/1.35 "PingFang SC", "Microsoft YaHei", sans-serif; margin: 44px 0 10px; padding-top: 10px; border-top: 4px solid var(--ink); }
+h3 { font: 600 18px/1.4 "PingFang SC", "Microsoft YaHei", sans-serif; margin: 26px 0 6px; }
+p { margin: 10px 0; text-align: justify; }
+a { color: var(--def); }
+code { font: 14px/1.4 "SF Mono", Menlo, Consolas, monospace; background: var(--tint); padding: 1px 4px; border-radius: 3px; }
+pre { background: var(--tint); padding: 12px 14px; border-radius: 6px; overflow-x: auto; }
+pre code { background: none; padding: 0; }
+blockquote { margin: 14px 0; padding: 4px 16px; border-left: 4px solid var(--rule); color: var(--muted); }
+table { border-collapse: collapse; width: 100%; margin: 14px 0; font-size: 15px; }
+th { text-align: left; font-family: "PingFang SC", "Microsoft YaHei", sans-serif; font-weight: 600; background: var(--tint); }
+th, td { padding: 6px 10px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+img { max-width: 100%; display: block; margin: 14px auto; }
+hr { border: 0; border-top: 4px solid var(--rule); margin: 32px 0; }
+.math { overflow-x: auto; margin: 12px 0; }
+.box { margin: 18px 0; padding: 10px 16px 6px; border-left: 5px solid var(--ink); background: var(--tint); break-inside: avoid; }
+.box-title { font: 600 15px/1.5 "PingFang SC", "Microsoft YaHei", sans-serif; margin-bottom: 2px; }
+.box-title .kind { margin-right: 6px; }
+.box.def { border-color: var(--def); } .box.def .kind { color: var(--def); }
+.box.thm, .box.lem, .box.prop, .box.cor { border-color: var(--thm); }
+.box.proof { border-color: var(--rule); background: transparent; }
+.box.proof > :last-child::after { content: " ∎"; }
+.box.misconception { border-color: var(--wrong); } .box.misconception .kind { color: var(--wrong); }
+.box.fact { border-color: var(--full); } .box.fact .kind { color: var(--full); }
+.box.blackbox { border-color: var(--box); border-left-style: dashed; } .box.blackbox .kind { color: var(--box); }
+.box.l2 { border-color: var(--l2); background: transparent; } .box.l2 .kind { color: var(--l2); }
+.box.l3 { border-color: var(--l3); border-left-style: dotted; background: transparent; color: var(--muted); }
+.box.l3 .kind::before { content: "◇ "; }
+.box.exercise { border-color: var(--ink); background: transparent; }
+.box.hint, .box.answer { border-color: var(--rule); background: transparent; font-size: 15px; }
+.box.map, .box.recap { border-color: var(--def); }
+.box.warning { border-color: var(--sketch); }
+.tag { display: inline-block; font: 600 12px/1.6 "PingFang SC", "Microsoft YaHei", sans-serif; padding: 0 7px; border-radius: 999px;
+  border: 1.5px solid currentColor; margin: 0 2px; vertical-align: 1px; }
+.tag.full { color: var(--full); } .tag.sketch { color: var(--sketch); } .tag.box { color: var(--box); }
+.tag.lv { color: var(--muted); } .tag.lv.l1 { color: var(--ink); } .tag.lv.l2 { color: var(--l2); }
+.star { color: var(--sketch); letter-spacing: -1px; }
+@media print { :root { --paper: #fff; } .notes { padding: 0; max-width: none; } h2 { break-after: avoid; } }
+@media (max-width: 600px) { body { font-size: 15px; } h1 { font-size: 27px; } .notes { padding: 28px 16px 60px; } }

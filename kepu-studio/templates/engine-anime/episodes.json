@@ -1,0 +1,10 @@
+{
+ "_doc": "每期的中文标题和英文行：ChapterCard(n) / NextEpisodeCard(n) / scene.next_episode(n) 从这里取。改标题只改这一处，然后重渲本期章节卡和上一期的下期卡。",
+ "zh": {
+  "1": {"title": "第一期的标题", "en": "Episode one in English"},
+  "2": {"title": "第二期的标题", "en": "Episode two in English"}
+ },
+ "en": {
+  "1": {"title": "Episode one in English", "sub": null}
+ }
+}

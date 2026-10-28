@@ -1,0 +1,14 @@
+{
+  "name": "kepu-studio-market",
+  "description": "科普番剧工坊：动漫 / 动画 / 游戏风中文科普视频工作流（kepu-studio）",
+  "owner": {
+    "name": "kepu-studio"
+  },
+  "plugins": [
+    {
+      "name": "kepu-studio",
+      "source": "./kepu-studio",
+      "description": "动漫 / 动画 / 游戏风中文科普视频的一条龙工作流：多音字与希腊字母读音、AI 配音与耳检、ManimGL 与像素 RPG 两套引擎、讲义与分级、审稿、发布、复盘。"
+    }
+  ]
+}

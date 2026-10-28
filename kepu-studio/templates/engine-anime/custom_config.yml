@@ -1,0 +1,12 @@
+# ManimGL 1.7.2 project config. render.sh passes this via --config_file.
+camera:
+  resolution: (1920, 1080)
+  background_color: "#12141C"
+  fps: 30
+text:
+  font: "PingFang SC"
+  alignment: "LEFT"
+scene:
+  show_animation_progress: False
+  leave_progress_bars: False
+log_level: "INFO"

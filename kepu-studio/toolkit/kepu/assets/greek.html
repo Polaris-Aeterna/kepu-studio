@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root { --bg:#f4f2ee; --ink:#1b1a18; --muted:#6c6862; --line:#dcd8d0; --card:#fffdf9; --acc:#1d4e89; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141413; --ink:#ecebe7; --muted:#9a968f; --line:#2c2b29; --card:#1c1b1a; --acc:#8fb4e8; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  header { position:sticky; top:0; background:var(--bg); padding:16px 20px 12px; border-bottom:1px solid var(--line); }
+  h1 { font-size:22px; margin:0 0 4px; } .sub { color:var(--muted); font-size:14px; }
+  button { font:inherit; border:1px solid var(--ink); background:var(--ink); color:var(--bg); padding:6px 14px; border-radius:8px; cursor:pointer; margin-top:8px; }
+  main { padding:12px 20px 60px; display:grid; grid-template-columns:repeat(auto-fill, minmax(280px, 1fr)); gap:12px; }
+  .letter { border:1px solid var(--line); border-radius:10px; background:var(--card); padding:12px; }
+  .big { font:600 34px/1 "Times New Roman", serif; margin-right:8px; } .name { color:var(--muted); }
+  label { display:grid; grid-template-columns:22px 1fr; gap:6px; align-items:center; margin-top:8px; cursor:pointer; }
+  label code { font-size:15px; } audio { width:100%; height:30px; grid-column:2; }
+  .picked { outline:2px solid var(--acc); }
+</style>
+</head>
+<body>
+<header>
+  <h1>希腊字母的英文读音 · 选一个最像的</h1>
+  <div class="sub">每条都是同一个载体句“设 X 等于零点五”。选你听着最接近英文读音、而且不像中文拼音的一条。没有满意的就都不选，回头加候选再试。</div>
+  <button id="export">导出选择（JSON）</button>
+</header>
+<main id="grid"></main>
+<script>
+const DATA = __DATA__;
+const KEY = "kepu-greek-" + DATA.voice_key;
+let pick = {};
+try { pick = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { pick = {}; }
+const esc = s => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+const groups = {};
+DATA.rows.forEach(r => { (groups[r.char] = groups[r.char] || {name: r.name, rows: []}).rows.push(r); });
+const grid = document.getElementById("grid");
+Object.entries(groups).forEach(([ch, g]) => {
+  const d = document.createElement("div");
+  d.className = "letter" + (pick[ch] ? " picked" : "");
+  d.innerHTML = `<div><span class="big">${esc(ch)}</span><span class="name">${esc(g.name)}</span></div>` +
+    g.rows.map(r => `<label><input type="radio" name="${esc(ch)}" value="${esc(r.say)}" ${pick[ch] === r.say ? "checked" : ""}>
+      <code>${esc(r.say)}</code><audio controls preload="none" src="${esc(r.clip)}"></audio></label>`).join("");
+  d.querySelectorAll("input").forEach(i => i.onchange = () => {
+    pick[ch] = i.value; d.classList.add("picked");
+    try { localStorage.setItem(KEY, JSON.stringify(pick)); } catch (e) {}
+  });
+  grid.appendChild(d);
+});
+document.getElementById("export").onclick = () => {
+  const out = {voice_key: DATA.voice_key, choices: Object.entries(pick).map(([char, say]) => ({char, say}))};
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([JSON.stringify(out, null, 1)], {type: "application/json"}));
+  a.download = "greek_choice.json"; a.click();
+};
+</script>
+</body>
+</html>

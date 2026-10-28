@@ -1,0 +1,754 @@
+# kepu 内置读音词典。每行：词条（带读音标记）<TAB>动作（force 默认 / leave / hold）<TAB>备注
+# force = 合成时换成只有这个读音的替身字；leave = 记下决定、不改文字（模型稳定的常用词，或者没有替身字的读音）；
+# hold = 同形词，读音取决于意思，每次都拦下，要求在稿子里标读音。
+# 词条同时用来修正通用词典：pypinyin 把 方差 标成 chà、背包 标成 bēi、用处 标成 chǔ，这里的词条会盖过它。
+# 来源：《ETH》engine/voice/pronounce.py 的 PROJECT_WORDS 与 script/PRONOUNCE.md；《地基之下》lib/pronounce.py 的 POLY_WORDS、
+#   polyphone_audit（2805 句 537 处）；kepu 在两部作品全部稿子（51 个文件、5860 条旁白）上跑出来的拦截；通用 STEM / 游戏词汇。
+# 个人的决定写进 ~/.kepu/lexicon.tsv（所有项目共用），项目的写进 pron/lexicon.tsv；都比这里优先。
+
+# ---------------------------------------------------------------- 数（A 级）
+数〔shǔ〕一数〔shǔ〕
+数〔shǔ〕数〔shù〕	force	数数 = 一个一个地数
+可数〔shǔ〕	force	可数 kěshǔ（《地基之下》最多的一类，253 处）
+不可数〔shǔ〕
+可数〔shǔ〕集
+可数〔shǔ〕无穷
+可数〔shǔ〕多
+可数〔shǔ〕个
+可数〔shǔ〕长
+可数〔shǔ〕模型
+可数〔shù〕学	leave	分词陷阱：可 + 数学家（《地基之下》第八轮误伤过）
+屈指可数〔shǔ〕
+数〔shǔ〕不胜数〔shǔ〕
+不计其数〔shù〕	leave
+倒数〔shǔ〕第	force	倒数第几（倒着数）
+倒数〔shù〕	force	数学：倒数 = 1/x；“倒数第几”另有词条
+数〔shǔ〕解	force	ETH：数解的个数（#SAT）
+数〔shǔ〕出
+数〔shǔ〕清
+数〔shǔ〕完
+数〔shǔ〕一下
+数〔shǔ〕到
+数〔shǔ〕不完
+数〔shǔ〕不清
+数〔shǔ〕不过来
+数〔shǔ〕得清
+数〔shǔ〕下去
+数〔shǔ〕过来
+数〔shǔ〕过去
+数〔shǔ〕一遍
+计数〔shù〕	force	jìshù
+
+# ---------------------------------------------------------------- 长（A 级，默认也强制）
+长〔cháng〕度
+长〔cháng〕串
+长〔cháng〕子句	force	分词陷阱：长子 + 句（ETH 作者听出念成 zhǎng）
+长〔cháng〕句
+长〔cháng〕字符串
+长〔cháng〕篇
+长〔cháng〕期
+长〔cháng〕久
+长〔cháng〕远
+长〔cháng〕短
+长〔cháng〕方形
+长〔cháng〕方体
+长〔cháng〕条
+长〔cháng〕链
+长〔cháng〕序列
+长〔cháng〕楼梯
+长〔cháng〕长〔cháng〕
+更长〔cháng〕
+越长〔cháng〕
+最长〔cháng〕
+很长〔cháng〕
+无限长〔cháng〕
+无穷长〔cháng〕
+有限长〔cháng〕
+任意长〔cháng〕
+足够长〔cháng〕
+指数长〔cháng〕
+多长〔cháng〕
+有多长〔cháng〕
+那么长〔cháng〕
+变长〔cháng〕
+边长〔cháng〕
+步长〔cháng〕
+波长〔cháng〕
+周长〔cháng〕
+擅长〔cháng〕
+特长〔cháng〕
+专长〔cháng〕
+漫长〔cháng〕
+延长〔cháng〕
+冗长〔cháng〕
+各有所长〔cháng〕
+取长〔cháng〕补短
+长〔cháng〕达
+增长〔zhǎng〕
+增长〔zhǎng〕率
+指数增长〔zhǎng〕
+成长〔zhǎng〕
+生长〔zhǎng〕
+长〔zhǎng〕大
+长〔zhǎng〕出
+助长〔zhǎng〕
+消长〔zhǎng〕
+校长〔zhǎng〕
+家长〔zhǎng〕
+部长〔zhǎng〕
+长〔zhǎng〕辈
+长〔zhǎng〕者
+长〔zhǎng〕相
+长〔zhǎng〕子	force	长子 = 大儿子（“长子句”有更长的词条）
+
+# ---------------------------------------------------------------- 行（A 级，默认也强制；规则管“第 k 行 / 这一行 / 行和列”）
+按行〔háng〕	force	ETH：按行合并（规则判成了 xíng）
+逐行〔háng〕
+行〔háng〕与行〔háng〕
+起始行〔háng〕
+排行〔háng〕榜
+同行〔háng〕评审
+行〔háng〕列式
+行〔háng〕向量
+行〔háng〕空间
+行〔háng〕秩
+行〔háng〕变换
+行〔háng〕号
+行〔háng〕首
+首行〔háng〕
+末行〔háng〕
+换行〔háng〕
+单行〔háng〕
+多行〔háng〕
+满行〔háng〕
+银行〔háng〕
+行〔háng〕业
+内行〔háng〕
+外行〔háng〕
+行〔háng〕家
+行〔háng〕情
+同行	hold	同形词：同行 tóngháng（同业）/ tóngxíng（一起走）
+一行人	hold	同形词：一行 yìháng（一行字）/ yìxíng（一行人）
+可行〔xíng〕
+并行〔xíng〕
+运行〔xíng〕
+进行〔xíng〕
+执行〔xíng〕
+行〔xíng〕为
+平行〔xíng〕
+行〔xíng〕不通
+行〔xíng〕得通
+行〔xíng〕动
+流行〔xíng〕
+发行〔xíng〕
+旅行〔xíng〕
+行〔xíng〕走
+行〔xíng〕星
+实行〔xíng〕
+举行〔xíng〕
+自行〔xíng〕
+步行〔xíng〕
+飞行〔xíng〕
+不行〔xíng〕
+就行〔xíng〕
+才行〔xíng〕
+也行〔xíng〕
+
+# ---------------------------------------------------------------- 当（A 级）
+当〔dāng〕成	force	作者偏好：当成念 dāng（当然的当）；词典是 dàng。想按词典念：项目词典加 当〔dàng〕成
+当〔dāng〕作	force	同上
+当〔dāng〕做	force	同上
+恰当〔dàng〕
+适当〔dàng〕
+妥当〔dàng〕
+稳当〔dàng〕	leave
+上当〔dàng〕
+直截了当〔dàng〕
+典当〔dàng〕
+当天	hold	同形词：当天 dāngtiān（那一天）/ dàngtiān（同一天）
+当〔dāng〕且仅当〔dāng〕	leave
+每当〔dāng〕	leave
+
+# ---------------------------------------------------------------- 重（A 级）
+重〔chóng〕新
+重〔chóng〕复
+重〔chóng〕叠
+重〔chóng〕合
+重〔chóng〕写
+重〔chóng〕做
+重〔chóng〕来
+重〔chóng〕排
+重〔chóng〕组
+重〔chóng〕构
+重〔chóng〕建
+重〔chóng〕述
+重〔chóng〕名
+重〔chóng〕数
+重〔chóng〕根
+重〔chóng〕积分
+二重〔chóng〕积分
+三重〔chóng〕积分
+双重〔chóng〕
+多重〔chóng〕
+重〔chóng〕言式
+重〔chóng〕启
+重〔chóng〕置
+重〔chóng〕载
+重〔chóng〕生
+重〔chóng〕现
+重〔chóng〕演
+重〔chóng〕返
+重〔chóng〕温
+重〔chóng〕申
+重〔chóng〕播
+重〔chóng〕修
+重〔chóng〕算
+重〔chóng〕跑
+重〔chóng〕渲染
+重〔chóng〕录
+重〔chóng〕拼
+重〔chóng〕绘
+重〔chóng〕开
+重〔chóng〕定义
+重〔chóng〕命名
+重〔chóng〕参数化
+重〔chóng〕整化
+重〔chóng〕重〔chóng〕
+不重〔chóng〕不漏
+重〔zhòng〕要	leave
+重〔zhòng〕要性	leave
+至关重〔zhòng〕要	leave
+重〔zhòng〕点	leave
+重〔zhòng〕视	leave
+重〔zhòng〕量	leave
+重〔zhòng〕心	leave
+重〔zhòng〕力	leave
+权重〔zhòng〕	leave
+严重〔zhòng〕	leave
+沉重〔zhòng〕	leave
+注重〔zhòng〕	leave
+着重〔zhòng〕	leave
+举足轻重〔zhòng〕	leave
+重〔zhòng〕大	leave
+重〔zhòng〕担	leave
+
+# ---------------------------------------------------------------- 差（A 级，默认 chā）
+方差〔chā〕	force	pypinyin 误标成 chà
+协方差〔chā〕
+误差〔chā〕
+偏差〔chā〕
+残差〔chā〕
+标准差〔chā〕
+均方差〔chā〕
+平方差〔chā〕
+对称差〔chā〕
+集合差〔chā〕
+极差〔chā〕
+公差〔chā〕	force	数学：等差数列的公差（出公差的“公差”念 chāi，请标）
+等差〔chā〕
+差〔chā〕值
+差〔chā〕分
+差〔chā〕集
+差〔chā〕商
+差〔chā〕异
+差〔chā〕别
+差〔chā〕距
+差〔chā〕额
+时差〔chā〕
+温差〔chā〕
+落差〔chā〕
+反差〔chā〕
+视差〔chā〕
+色差〔chā〕
+差〔chà〕不多
+差〔chà〕点
+差〔chà〕一点
+差〔chà〕得远
+差〔chà〕劲
+相差〔chà〕
+只差〔chà〕
+还差〔chà〕
+很差〔chà〕
+太差〔chà〕
+变差〔chà〕
+一字不差〔chà〕
+一点不差〔chà〕
+一行不差〔chà〕
+出差〔chāi〕
+差〔chāi〕事
+差〔chāi〕遣
+参差〔cī〕	leave	cēncī，常用词，模型稳定
+
+# ---------------------------------------------------------------- 调（A 级，默认也强制）
+单调〔diào〕
+单调〔diào〕性
+调〔diào〕用
+强调〔diào〕
+声调〔diào〕
+音调〔diào〕
+语调〔diào〕
+色调〔diào〕
+基调〔diào〕
+格调〔diào〕
+曲调〔diào〕
+论调〔diào〕
+步调〔diào〕
+调〔diào〕子
+调〔diào〕查
+调〔diào〕度
+调〔diào〕度器
+调〔diào〕换
+调〔diào〕动
+对调〔diào〕
+调〔diào〕包
+调〔diào〕研
+调〔tiáo〕和
+调〔tiáo〕和级数
+调〔tiáo〕和平均
+调〔tiáo〕整
+调〔tiáo〕参
+调〔tiáo〕参数
+调〔tiáo〕节
+调〔tiáo〕试
+调〔tiáo〕控
+调〔tiáo〕制
+调〔tiáo〕剂
+调〔tiáo〕解
+调〔tiáo〕优
+调〔tiáo〕色
+协调〔tiáo〕
+空调〔tiáo〕
+微调〔tiáo〕
+失调〔tiáo〕
+可调〔tiáo〕
+
+# ---------------------------------------------------------------- 相（A 级，默认 xiāng）
+相〔xiàng〕位
+相〔xiàng〕变
+相〔xiàng〕图
+相〔xiàng〕空间
+相〔xiàng〕速度
+相〔xiàng〕角
+相〔xiàng〕移
+相〔xiàng〕态
+相〔xiàng〕平面
+相〔xiàng〕轨迹
+相〔xiàng〕因子
+相〔xiàng〕边界
+相〔xiàng〕分离
+真相〔xiàng〕
+照相〔xiàng〕
+相〔xiàng〕机
+相〔xiàng〕片
+首相〔xiàng〕
+宰相〔xiàng〕
+丞相〔xiàng〕
+相〔xiàng〕貌
+长相〔xiàng〕
+亮相〔xiàng〕
+变相〔xiàng〕
+面相〔xiàng〕
+手相〔xiàng〕
+星相〔xiàng〕
+品相〔xiàng〕
+洋相〔xiàng〕
+相〔xiàng〕声
+单相〔xiàng〕
+三相〔xiàng〕
+色相〔xiàng〕
+
+# ---------------------------------------------------------------- 切（A 级，默认 qiē）
+切〔qiē〕线	force	pypinyin 误标成 qiè
+切〔qiē〕面
+切〔qiē〕平面
+切〔qiē〕空间
+切〔qiē〕向量
+切〔qiē〕丛
+切〔qiē〕点
+相切〔qiē〕
+正切〔qiē〕
+余切〔qiē〕
+切〔qiē〕比雪夫
+切〔qiē〕割
+切〔qiē〕分
+切〔qiē〕片
+切〔qiē〕口
+切〔qiē〕换
+切〔qiē〕入
+切〔qiē〕开
+切〔qiē〕成
+切〔qiē〕法
+横切〔qiē〕
+一切〔qiè〕	leave
+密切〔qiè〕	leave
+确切〔qiè〕	leave
+迫切〔qiè〕	leave
+亲切〔qiè〕	leave
+急切〔qiè〕	leave
+关切〔qiè〕	leave
+贴切〔qiè〕	leave
+恳切〔qiè〕	leave
+真切〔qiè〕	leave
+切〔qiè〕实
+切〔qiè〕记
+切〔qiè〕忌
+切〔qiè〕身
+不切〔qiè〕实际
+
+# ---------------------------------------------------------------- 为（B 级：规则管“为真 / 记为 / 为了”）
+认为〔wéi〕	leave
+成为〔wéi〕	leave
+作为〔wéi〕	leave
+以为〔wéi〕	leave
+行为〔wéi〕	leave
+称为〔wéi〕
+视为〔wéi〕
+记为〔wéi〕
+定义为〔wéi〕
+设为〔wéi〕
+化为〔wéi〕
+变为〔wéi〕
+分为〔wéi〕
+改为〔wéi〕
+为〔wéi〕止
+为〔wéi〕主
+为〔wéi〕首
+为〔wéi〕期
+为〔wéi〕难
+为〔wéi〕人
+因为〔wèi〕	leave
+为〔wèi〕了	leave
+为〔wèi〕什么	leave
+为〔wèi〕何	leave
+为〔wèi〕此	leave
+
+# ---------------------------------------------------------------- 处（B 级）
+难处〔chù〕	force	讲解里多是“难处 = 难的地方”（另一义 nánchǔ = 难相处，请标）
+用处〔chù〕	leave	pypinyin 误标成 chǔ
+好处〔chù〕	leave
+坏处〔chù〕	leave
+益处〔chù〕	leave
+长处〔chù〕
+短处〔chù〕
+此处〔chù〕
+何处〔chù〕
+到处〔chù〕
+处〔chù〕处〔chù〕
+别处〔chù〕
+出处〔chù〕
+深处〔chù〕
+高处〔chù〕
+远处〔chù〕
+一处〔chù〕
+两处〔chù〕
+零处〔chù〕
+每一处〔chù〕
+多处〔chù〕
+处〔chǔ〕理	leave
+处〔chǔ〕于	leave
+处〔chǔ〕在
+处〔chǔ〕境
+相处〔chǔ〕
+共处〔chǔ〕
+处〔chǔ〕置
+处〔chǔ〕罚
+处〔chǔ〕分
+处〔chǔ〕事
+
+# ---------------------------------------------------------------- 量（B 级）
+测量〔liáng〕
+衡量〔liáng〕
+丈量〔liáng〕
+量〔liáng〕一量〔liáng〕
+量〔liáng〕出
+量〔liáng〕得出
+量〔liáng〕的是
+度量〔liàng〕	leave	数学：度量 dùliàng
+
+# ---------------------------------------------------------------- 奇（B 级）
+奇〔jī〕数
+奇〔jī〕偶
+奇〔jī〕偶性
+奇〔jī〕偶校验
+奇〔jī〕函数
+奇〔jī〕次
+奇〔jī〕阶
+奇〔jī〕排列
+奇〔jī〕置换
+奇〔qí〕点	leave	奇点 = 奇异点（qí），不是奇数
+奇〔qí〕异	leave
+奇〔qí〕异值	leave
+
+# ---------------------------------------------------------------- 空（B 级）
+空〔kòng〕白
+空〔kòng〕格
+空〔kòng〕位
+空〔kòng〕隙
+空〔kòng〕闲
+空〔kòng〕缺
+填空〔kòng〕
+留空〔kòng〕
+非空〔kōng〕子集	leave	分词陷阱：非 + 空子（kōng 是默认读音，没有替身字）
+非空〔kōng〕集	leave
+非空〔kōng〕	leave
+有空〔kōng〕集	leave	分词陷阱：有空（kòng）+ 集
+空〔kōng〕集	leave
+空〔kōng〕串	leave
+空〔kōng〕字符串	leave
+空〔kōng〕类型	leave
+空〔kōng〕表	leave
+空〔kōng〕列表	leave
+空〔kōng〕背包	leave
+
+# ---------------------------------------------------------------- 模（B 级）
+一模〔mú〕一样	force	没有替身字：送拼音 mú，或改写成“完全一样”
+模〔mú〕样
+模〔mú〕板	force	作者可改写成“样板 / 套路”（ETH 改成了套路）
+模〔mú〕具
+模〔mú〕子
+模〔mó〕型	leave
+模〔mó〕式	leave
+规模〔mó〕	leave
+取模〔mó〕
+
+# ---------------------------------------------------------------- 角 称 卷 校 累 降 倒 几 似 弹 卡 散 曲 转 种 系 间 尽 冲 传（B 级）
+角〔jué〕色
+主角〔jué〕
+配角〔jué〕
+丑角〔jué〕
+角〔jué〕逐
+对称〔chèn〕
+不对称〔chèn〕
+匀称〔chèn〕
+相称〔chèn〕
+称〔chèn〕心
+称〔chèn〕职
+卷〔juǎn〕积	leave	juǎn 没有替身字；“卷积”模型稳定
+试卷〔juàn〕
+考卷〔juàn〕
+答卷〔juàn〕
+阅卷〔juàn〕
+卷〔juàn〕子
+卷〔juàn〕轴
+画卷〔juàn〕
+校〔jiào〕准
+校〔jiào〕验
+校〔jiào〕正
+校〔jiào〕对
+校〔jiào〕订
+累〔lěi〕积
+累〔lěi〕计
+累〔lěi〕加
+累〔lěi〕乘
+积累〔lěi〕
+累〔lěi〕积分布
+日积月累〔lěi〕
+累〔léi〕赘
+投降〔xiáng〕
+降〔xiáng〕服
+倒〔dǎo〕下
+打倒〔dǎo〕
+推倒〔dǎo〕
+驳倒〔dǎo〕
+颠倒〔dǎo〕
+倒〔dǎo〕闭
+几〔jī〕乎
+几〔jī〕乎处〔chù〕处〔chù〕
+几〔jī〕率
+茶几〔jī〕
+似〔sì〕然
+类似〔sì〕	leave
+相似〔sì〕	leave
+近似〔sì〕	leave
+似〔sì〕乎	leave
+好似〔sì〕	leave
+看似〔sì〕	leave
+似〔sì〕是而非	leave
+最大似〔sì〕然
+类似〔sì〕	leave
+相似〔sì〕	leave
+近似〔sì〕	leave
+似〔sì〕乎	leave
+好似〔sì〕	leave
+看似〔sì〕	leave
+似〔sì〕是而非	leave
+似〔shì〕的
+子弹〔dàn〕
+弹〔dàn〕幕
+导弹〔dàn〕
+炸弹〔dàn〕
+弹〔dàn〕药
+弹〔tán〕性
+弹〔tán〕簧
+弹〔tán〕出
+弹〔tán〕窗
+反弹〔tán〕
+关卡〔qiǎ〕	force	没有替身字：送拼音 qiǎ，或改写成“关口 / 谜题”（ETH 改成了谜题）
+卡〔qiǎ〕住
+卡〔qiǎ〕壳
+卡〔qiǎ〕关
+散〔sǎn〕射
+散〔sǎn〕文
+松散〔sǎn〕
+散〔sǎn〕装
+歌曲〔qǔ〕
+作曲〔qǔ〕
+插曲〔qǔ〕
+序曲〔qǔ〕
+主题曲〔qǔ〕
+曲〔qǔ〕子
+转〔zhuàn〕动
+转〔zhuàn〕速
+转〔zhuàn〕圈
+转〔zhuàn〕盘
+自转〔zhuàn〕
+公转〔zhuàn〕
+种〔zhòng〕树
+种〔zhòng〕植
+种〔zhòng〕地
+随机种〔zhǒng〕子	leave
+系〔jì〕鞋带
+系〔jì〕上
+间〔jiàn〕断
+间〔jiàn〕断点
+间〔jiàn〕隔
+间〔jiàn〕接
+间〔jiàn〕歇
+中间〔jiān〕隔	leave	分词陷阱：中间 + 隔着 / 中 + 间隔
+尽〔jǐn〕管
+尽〔jǐn〕量
+尽〔jǐn〕可能
+尽〔jǐn〕快
+尽〔jǐn〕早
+尽〔jìn〕头	leave
+尽〔jìn〕力	leave
+冲〔chòng〕着
+冲〔chòng〕劲
+传〔zhuàn〕记
+自传〔zhuàn〕
+列传〔zhuàn〕
+外传〔zhuàn〕
+
+# ---------------------------------------------------------------- 其他 B / C 级
+还〔huán〕原
+归还〔huán〕
+偿还〔huán〕
+返还〔huán〕
+还〔huán〕给
+还〔hái〕给出	force	分词陷阱：还给 / 还 + 给出
+船只〔zhī〕
+命中〔zhòng〕
+打中〔zhòng〕
+击中〔zhòng〕
+猜中〔zhòng〕
+选中〔zhòng〕
+挑中〔zhòng〕
+看中〔zhòng〕
+中〔zhòng〕奖
+中〔zhòng〕毒
+中〔zhòng〕标
+对应〔yìng〕	leave
+一一对应〔yìng〕	leave
+应〔yìng〕用	leave
+相应〔yìng〕	leave
+响应〔yìng〕	leave
+效应〔yìng〕	leave
+反应〔yìng〕	leave
+适应〔yìng〕	leave
+分〔fēn〕量	force	数学：向量的分量 fēn；重量义 fèn 请在稿子里标 分〔fèn〕
+成分〔fèn〕
+部分〔fèn〕	leave
+过分〔fèn〕
+本分〔fèn〕
+知识分〔fèn〕子
+人参〔shēn〕
+反省〔xǐng〕
+省〔xǐng〕悟
+内省〔xǐng〕
+率〔shuài〕先
+统率〔shuài〕
+轻率〔shuài〕
+草率〔shuài〕
+坦率〔shuài〕
+直率〔shuài〕
+宝藏〔zàng〕
+西藏〔zàng〕
+薄〔bó〕弱
+单薄〔bó〕
+稀薄〔bó〕
+淡薄〔bó〕
+勉强〔qiǎng〕
+强〔qiǎng〕迫
+强〔qiǎng〕求
+倔强〔jiàng〕
+背〔bèi〕包	leave	pypinyin 误标成 bēi；背包 bèibāo（背包问题、《地基之下》第二季的背包）
+背〔bèi〕包问题	leave
+背〔bēi〕负
+背〔bēi〕包袱
+便〔pián〕宜	leave
+好〔hào〕奇	leave
+爱好〔hào〕	leave
+好学	hold	同形词：好学 hàoxué（爱学习）/ hǎoxué（容易学）
+更〔gēng〕新	leave
+变更〔gēng〕
+要〔yāo〕求	leave
+给〔jǐ〕予
+供给〔jǐ〕
+自给〔jǐ〕自足
+了〔liǎo〕解	leave
+不了〔liǎo〕	leave
+了〔liǎo〕不起	leave
+一目了〔liǎo〕然	leave
+音乐〔yuè〕	leave
+乐〔yuè〕器
+头发〔fà〕	leave
+理发〔fà〕	leave
+露〔lòu〕脸
+露〔lòu〕馅
+淹没〔mò〕
+埋没〔mò〕
+出没〔mò〕
+睡觉〔jiào〕	leave
+着〔zháo〕急
+着〔zháo〕迷
+睡着〔zháo〕
+用不着〔zháo〕
+着〔zhuó〕手
+着〔zhuó〕重
+着〔zhuó〕陆
+着〔zhuó〕落
+着〔zhuó〕眼
+如实地〔de〕	leave	分词陷阱：如 + 实地
+无穷地〔de〕	leave	分词陷阱：无穷地下去（地下）
+
+# ---------------------------------------------------------------- 人名、地名、译名
+华〔huà〕罗庚
+华〔huà〕山
+柏〔bó〕拉图
+柏〔bó〕林
+泊〔bó〕松
+泊〔bó〕松分布
+湖泊〔pō〕
+伽〔jiā〕利略
+伽〔jiā〕罗瓦
+伽〔jiā〕罗华
+伽〔gā〕马	leave	伽马 = gamma 的中文音译；英文读音写 γ，见 greek.json
+伽〔gā〕马里	leave	分词陷阱：伽马 + 里 / 伽 + 马里
+朴〔pǔ〕素
+朴〔pǔ〕素贝叶斯
+单〔chán〕于
+曾〔zēng〕孙
+
+# ---------------------------------------------------------------- 动漫 / 游戏词汇
+血〔xuè〕量	leave
+回血〔xuè〕	leave
+掉血〔xuè〕	leave
+加血〔xuè〕	leave
+弹〔tán〕反	force	游戏：弹反（招架）
+抽卡〔kǎ〕	leave
+卡〔kǎ〕牌	leave
+卡〔kǎ〕池	leave
+转〔zhuǎn〕生	leave
+觉〔jué〕醒	leave
+降〔jiàng〕临	leave
+切〔qiè〕不可	leave

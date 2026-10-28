@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root { --bg:#f4f2ee; --ink:#1b1a18; --muted:#6c6862; --line:#dcd8d0; --ok:#2f7d4f; --bad:#b3341f; --hi:#fff3b0; --card:#fffdf9; }
+  @media (prefers-color-scheme: dark) { :root { --bg:#141413; --ink:#ecebe7; --muted:#9a968f; --line:#2c2b29; --ok:#5cbf86; --bad:#e36a52; --hi:#5a4b10; --card:#1c1b1a; } }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:16px/1.55 -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }
+  header { position:sticky; top:0; background:var(--bg); padding:16px 20px 12px; border-bottom:1px solid var(--line); z-index:2; }
+  h1 { font-size:22px; margin:0 0 4px; }
+  .sub { color:var(--muted); font-size:14px; }
+  .bar { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; align-items:center; }
+  button { font:inherit; border:1px solid var(--line); background:var(--card); color:var(--ink); padding:6px 12px; border-radius:8px; cursor:pointer; }
+  button.primary { background:var(--ink); color:var(--bg); border-color:var(--ink); }
+  main { padding:12px 20px 80px; max-width:980px; }
+  .row { display:grid; grid-template-columns: 44px 1fr auto; gap:12px; padding:12px; border:1px solid var(--line); border-radius:10px; background:var(--card); margin:10px 0; }
+  .row.cur { outline:2px solid var(--ink); }
+  .n { color:var(--muted); font-variant-numeric:tabular-nums; }
+  .ctx { font-size:19px; letter-spacing:.02em; }
+  .ctx mark { background:var(--hi); color:inherit; padding:0 2px; border-radius:3px; }
+  .meta { color:var(--muted); font-size:13px; margin-top:2px; }
+  .kind { display:inline-block; font-size:12px; border:1px solid var(--line); border-radius:999px; padding:0 8px; margin-right:6px; }
+  audio { width:100%; height:32px; margin-top:6px; }
+  .vote { display:flex; flex-direction:column; gap:6px; }
+  .vote button.on.ok { background:var(--ok); color:#fff; border-color:var(--ok); }
+  .vote button.on.bad { background:var(--bad); color:#fff; border-color:var(--bad); }
+  input.note { width:100%; margin-top:6px; font:inherit; font-size:13px; padding:4px 8px; border:1px solid var(--line); border-radius:6px; background:transparent; color:var(--ink); }
+  .help { color:var(--muted); font-size:13px; }
+  @media (max-width: 600px) { .row { grid-template-columns: 1fr; } .vote { flex-direction:row; } }
+</style>
+</head>
+<body>
+<header>
+  <h1 id="title"></h1>
+  <div class="sub" id="sub"></div>
+  <div class="bar">
+    <button class="primary" id="export">导出结果（JSON）</button>
+    <button id="copy">复制结果</button>
+    <button id="allok">剩下的都标“对”</button>
+    <span class="help">快捷键：J/K 上下、空格播放、1 对、2 错</span>
+    <span class="help" id="progress"></span>
+  </div>
+</header>
+<main id="list"></main>
+<script>
+const DATA = __DATA__;
+const KEY = "kepu-earcheck-" + DATA.chapter + "-" + DATA.voice_key;
+let state = {};
+try { state = JSON.parse(localStorage.getItem(KEY) || "{}"); } catch (e) { state = {}; }
+const save = () => { try { localStorage.setItem(KEY, JSON.stringify(state)); } catch (e) {} };
+document.getElementById("title").textContent = "耳检 · " + DATA.chapter;
+document.getElementById("sub").textContent = DATA.rows.length + " 处高风险读音。每段从这个字前 1.3 秒开始。听完点“导出结果”，再运行 kepu earcheck ingest <文件>。";
+const list = document.getElementById("list");
+let cur = 0;
+function esc(s) { return String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c])); }
+function ctxHTML(c) { return esc(c).replace("【", "<mark>").replace("】", "</mark>"); }
+function render() {
+  list.innerHTML = "";
+  DATA.rows.forEach((r, k) => {
+    const s = state[r.n] || {};
+    const div = document.createElement("div");
+    div.className = "row" + (k === cur ? " cur" : "");
+    const expect = r.kind === "greek" ? `应念：${esc(r.reading)}（发给模型：${esc(r.say)}）`
+                 : r.kind === "latin" ? `“${esc(r.reading)}”逐字母念还是当单词念？对 = 符合你的预期`
+                 : r.kind === "number" ? "数字念法对吗？"
+                 : `应念：${esc(r.reading)}（发给模型：${esc(r.say)}）`;
+    div.innerHTML = `<div class="n">${r.n}</div>
+      <div><div class="ctx">${ctxHTML(r.ctx)}</div>
+        <div class="meta"><span class="kind">${esc(DATA.kinds[r.kind] || r.kind)}</span>beat ${esc(r.beat)} · ${r.t}s · ${expect}</div>
+        <div class="meta">${esc(r.why)}</div>
+        <audio controls preload="none" src="${esc(r.clip)}"></audio>
+        <input class="note" placeholder="备注（念成了什么？）" value="${esc(s.note || "")}"></div>
+      <div class="vote"><button class="ok ${s.ok === true ? "on ok" : ""}">对</button><button class="bad ${s.ok === false ? "on bad" : ""}">错</button></div>`;
+    div.querySelector("button.ok").onclick = () => { state[r.n] = {...(state[r.n]||{}), ok: true}; save(); cur = Math.min(k + 1, DATA.rows.length - 1); render(); };
+    div.querySelector("button.bad").onclick = () => { state[r.n] = {...(state[r.n]||{}), ok: false}; save(); render(); };
+    div.querySelector("input.note").oninput = e => { state[r.n] = {...(state[r.n]||{}), note: e.target.value}; save(); };
+    div.onclick = () => { cur = k; document.querySelectorAll(".row").forEach((x, j) => x.classList.toggle("cur", j === k)); };
+    list.appendChild(div);
+  });
+  const done = DATA.rows.filter(r => state[r.n] && state[r.n].ok !== undefined).length;
+  const bad = DATA.rows.filter(r => state[r.n] && state[r.n].ok === false).length;
+  document.getElementById("progress").textContent = `已听 ${done}/${DATA.rows.length}，错 ${bad}`;
+  const el = list.children[cur]; if (el) el.scrollIntoView({block: "nearest"});
+}
+function result() {
+  return JSON.stringify({chapter: DATA.chapter, voice_key: DATA.voice_key,
+    results: DATA.rows.map(r => ({...r, ok: state[r.n] ? state[r.n].ok : null, note: state[r.n] ? (state[r.n].note || "") : ""}))}, null, 1);
+}
+document.getElementById("export").onclick = () => {
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([result()], {type: "application/json"}));
+  a.download = `earcheck_${DATA.chapter}_results.json`; a.click();
+};
+document.getElementById("copy").onclick = () => { navigator.clipboard && navigator.clipboard.writeText(result()); };
+document.getElementById("allok").onclick = () => { DATA.rows.forEach(r => { if (!state[r.n] || state[r.n].ok === undefined) state[r.n] = {...(state[r.n]||{}), ok: true}; }); save(); render(); };
+document.addEventListener("keydown", e => {
+  if (e.target.tagName === "INPUT") return;
+  const rows = list.children;
+  if (e.key === "j") { cur = Math.min(cur + 1, rows.length - 1); render(); }
+  else if (e.key === "k") { cur = Math.max(cur - 1, 0); render(); }
+  else if (e.key === " ") { e.preventDefault(); const a = rows[cur] && rows[cur].querySelector("audio"); if (a) { a.currentTime = 0; a.play(); } }
+  else if (e.key === "1") { rows[cur] && rows[cur].querySelector("button.ok").click(); }
+  else if (e.key === "2") { rows[cur] && rows[cur].querySelector("button.bad").click(); }
+});
+render();
+</script>
+</body>
+</html>
