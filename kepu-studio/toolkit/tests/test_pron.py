@@ -119,12 +119,19 @@ class Traps(unittest.TestCase):
 
 class Spoken(unittest.TestCase):
     def test_greek_english(self):
-        p = prepare("设σ等于零点五", CFG)
+        # 默认音色（Susan · eleven_v4）：作者 2026-10-29 逐个试听选定，不再进耳检包；φ 是例外（watch）
+        susan = PronConfig(voice_key="kAIqZ7fZv234ClKXwzDx__eleven_v4", project_root=Path("/nonexistent"))
+        p = prepare("设σ等于零点五", susan)
         self.assertIn(" sigma ", p.tts)
-        self.assertTrue(any(r["kind"] == "greek" for r in p.records))      # 还没在你的音色上验证
-        p = prepare("φ 或非 φ", CFG)
-        self.assertIn("fài", p.tts)                                          # 作者亲耳选定
         self.assertFalse(any(r["kind"] == "greek" for r in p.records))
+        p = prepare("设π等于三点一四", susan)
+        self.assertIn(" pie ", p.tts)
+        p = prepare("φ 或非 φ", susan)
+        self.assertIn("phi", p.tts)
+        self.assertTrue(any(r["kind"] == "greek" and r.get("watch") for r in p.records))   # 逻辑式里曾念成 fi
+        # 别的音色：一律按“没验证”处理，进耳检包
+        p = prepare("设σ等于零点五", PronConfig(voice_key="someone-else__eleven_v4"))
+        self.assertTrue(any(r["kind"] == "greek" for r in p.records))
 
     def test_symbols(self):
         self.assertIn("对所有", prepare("∀x", CFG).tts)

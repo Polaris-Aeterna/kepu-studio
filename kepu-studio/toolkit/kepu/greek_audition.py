@@ -5,8 +5,9 @@
     kepu greek audition --letters σμξ         # 只试这几个
     kepu greek ingest 下载的选择.json          # 写进音色档案 ~/.kepu/voices/<音色>.json，所有项目共用
 
-候选写法见 data/greek.json：多音节字母用英文拼写（sigma、Sigma、sig-ma），单音节字母用能确定念出英文音的写法
-（π→派 = pie，ψ→赛 = psi，φ→fài = phi，τ→套 = tau）。每个候选放在同一个载体句里：“设 X 等于零点五。”
+候选写法见 data/greek.json：多音节字母用英文拼写（sigma、Sigma、sig-ma），单音节字母另备能确定念出英文音的写法
+（τ→套、ψ→赛、χ→凯、π→派）。每个候选放在同一个载体句里：“设 X 等于零点五。”默认音色（Susan · eleven_v4）的 24 个
+字母已由作者 2026-10-29 逐个选定，写进了 greek.json 的 en。
 教训（《地基之下》第一到三轮）：先让作者从 5–6 个候选里选定，再调工具；phi、fye 两轮都白做了。
 """
 from __future__ import annotations
@@ -22,7 +23,8 @@ from .util import ASSETS
 from .voice import cache_key, settings, take, to_wav
 
 CARRIER = "设 {x} 等于零点五。"
-VARIANTS = set("ϵϕς")              # follow their main letter (ε φ σ) unless asked for explicitly
+VARIANT_OF = {"ϵ": "ε", "ϕ": "φ", "ς": "σ"}
+VARIANTS = set(VARIANT_OF)          # follow their main letter (ε φ σ) unless asked for explicitly
 EMBED_LIMIT = 15_000_000           # bytes of audio embedded in the page (self-contained, opens anywhere)
 
 
@@ -87,10 +89,10 @@ def ingest(path: Path, cfg) -> int:
     d = json.loads(Path(path).read_text("utf-8"))
     key = d.get("voice_key") or cfg.voice_key
     chosen = {r["char"]: {"say": r["say"], "verified": True} for r in d.get("choices", [])}
-    for ch, v in list(chosen.items()):                 # the uppercase form follows its lowercase letter
-        up = ch.upper()
-        if up != ch and up in greek_table() and up not in chosen:
-            chosen[up] = dict(v)
+    for ch, v in list(chosen.items()):                 # uppercase and variant forms follow their main letter
+        for other in (ch.upper(), *(k for k, base in VARIANT_OF.items() if base == ch)):
+            if other != ch and other in greek_table() and other not in chosen:
+                chosen[other] = dict(v)
     p = save_profile(key, {"greek": chosen})
     print(f"[greek] {len(chosen)} 个字母的读法写进 {p}")
     return 0

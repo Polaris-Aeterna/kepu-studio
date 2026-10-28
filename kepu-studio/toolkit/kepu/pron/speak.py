@@ -97,6 +97,8 @@ def prepare(spoken: str, cfg: PronConfig | None = None) -> Prepared:
                       (" " if right and (is_han(right) or right.isalnum()) else "")
             if g[1] in ("new",):
                 records.append(_rec(clean, i, "greek", greek[ch]["name"], say.strip(), "希腊字母读法还没在这个音色上验证"))
+            elif greek[ch].get("watch"):
+                records.append({**_rec(clean, i, "greek", greek[ch]["name"], say.strip(), greek[ch]["watch"]), "watch": True})
         elif ch in say_map:
             say = say_map[ch]
         elif ch in hold_map:

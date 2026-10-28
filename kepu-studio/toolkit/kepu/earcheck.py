@@ -37,7 +37,7 @@ def _pick(beats: dict, profile: dict, n_control: int = 5) -> list[dict]:
                 continue
             if k == "pinyin" and r["reading"] in profile.get("pinyin_ok", []):
                 continue
-            if k == "greek" and profile.get("greek", {}).get(r["char"], {}).get("verified"):
+            if k == "greek" and profile.get("greek", {}).get(r["char"], {}).get("verified") and not r.get("watch"):
                 continue
             if key in seen and k != "pinyin":
                 continue

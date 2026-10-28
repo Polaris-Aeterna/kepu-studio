@@ -33,8 +33,11 @@ def profile_paths(voice_key: str | None, project_root: Path | None) -> list[Path
     return out
 
 
+DEFAULT_VOICE_KEY = "kAIqZ7fZv234ClKXwzDx__eleven_v4"     # Susan · eleven_v4: greek.json's "field" status is about this voice
+
+
 def load_profile(voice_key: str | None, project_root: Path | None) -> dict:
-    prof = {"greek": {}, "standins_bad": [], "standins_ok": [], "pinyin_ok": []}
+    prof = {"greek": {}, "standins_bad": [], "standins_ok": [], "pinyin_ok": [], "voice_key": voice_key}
     for p in profile_paths(voice_key, project_root):
         if p.exists():
             try:
@@ -70,4 +73,5 @@ def greek_say(ch: str, style: str, profile: dict) -> tuple[str, str] | None:
     p = profile.get("greek", {}).get(ch)
     if p and p.get("say"):
         return p["say"], "verified" if p.get("verified") else "new"
-    return g["en"], g.get("status", "new")
+    field = g.get("status") == "field" and profile.get("voice_key") == DEFAULT_VOICE_KEY
+    return g["en"], "field" if field else "new"

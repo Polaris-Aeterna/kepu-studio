@@ -7,7 +7,7 @@
 
 <br>
 
-![version](https://img.shields.io/badge/version-0.1.0-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![selftest](https://img.shields.io/badge/selftest-17_passing-2f7d4f?style=flat-square)
+![version](https://img.shields.io/badge/version-0.1.1-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![selftest](https://img.shields.io/badge/selftest-17_passing-2f7d4f?style=flat-square)
 
 <br>
 
@@ -89,7 +89,9 @@ $ ./kepu lint script/episodes/ep01.md
 <img src="docs/images/greek_audition.png" alt="希腊字母试听页：每个字母 2–3 个候选写法，各配一段试听" width="100%">
 
 - 多音节字母送英文拼写，比如 alpha、sigma、lambda。
-- 单音节字母用一定能念出英文音的写法：π→派（pie）、ψ→赛（psi）、φ→fài（phi）、χ→凯（chi）、τ→套（tau）。
+- 单音节字母另外准备了能确定念出英文音的写法，作为候选：τ→套（tau）、ψ→赛（psi）。
+- 默认写法是作者在默认音色 Susan · eleven_v4 上逐个试听选定的（2026-10-29）：π→pie、φ→phi、χ→kai、ν→nu、λ→Lambda、τ→套、ψ→赛，其余字母用英文拼写。
+- 换了音色，所有字母都按“没验证”处理，需要重新试听。φ 虽然已经验证过，每期第一次出现仍然会进耳检包，因为“φ 或非 φ”这类逻辑式里曾经念成 fi。
 - `kepu greek audition` 合成全部候选，生成上面这个试听页（音频直接嵌在页面里），大约 800 字符。选完导出，再 `kepu greek ingest`，结果写进音色档案，所有项目共用。
 
 ## 耳检包：只听高风险的几十处
