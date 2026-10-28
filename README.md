@@ -7,11 +7,7 @@
 
 <br>
 
-![version](https://img.shields.io/badge/version-0.1.0-1d1c1a?style=flat-square)
-![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square)
-![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white)
-![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square)
-![selftest](https://img.shields.io/badge/selftest-17_passing-2f7d4f?style=flat-square)
+![version](https://img.shields.io/badge/version-0.1.0-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![selftest](https://img.shields.io/badge/selftest-17_passing-2f7d4f?style=flat-square)
 
 <br>
 
