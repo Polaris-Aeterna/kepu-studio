@@ -20,7 +20,7 @@ from pathlib import Path
 from .pron.greek import greek_table, load_profile, save_profile
 from .timing import wav_duration
 from .util import ASSETS
-from .voice import cache_key, settings, take, to_wav
+from .voice import cache_key, ledger_add, settings, take, to_wav
 
 CARRIER = "设 {x} 等于零点五。"
 VARIANT_OF = {"ϵ": "ε", "ϕ": "φ", "ς": "σ"}
@@ -66,6 +66,8 @@ def audition(cfg, letters: str | None = None, dry: bool = False, max_chars: int 
     rows, total = [], 0
     for n, ch, name, c, t in lines:
         mp3, _, hit = take(t, engine, st, cache, cfg)
+        if not hit:
+            ledger_add(cfg, "greek-audition", f"{n:03d}", len(t), engine, st)
         wav = to_wav(mp3, out / "clips" / f"{n:03d}.wav")
         data = mp3.read_bytes()
         total += len(data)

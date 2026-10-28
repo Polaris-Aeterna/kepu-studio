@@ -43,8 +43,8 @@ python3 "${CLAUDE_PLUGIN_ROOT}/toolkit/kepu_run.py" init <目录> --engine none 
 | 3 | 写稿 | `script/episodes/epNN.md`：beat、`{显示\|读法}`、`字〔读音〕`、[L1–L3]、[严谨度]、（停顿） | `kepu lint` 0 处拦下；`kepu stats` 节奏、分级达标 | 读一遍：像不像人话 | `script`、`pronounce` |
 | 4 | 审稿 | `review/epNN_*.md`：🔴 必改 / 🟠 应改 / 🟡 可改，每条附出处 | 🔴 清零；数字都有复算脚本 | 作者看 🔴 和前 10 条 🟠 | `review` |
 | 5 | 配音 | `<audio>/epNN/beats.json` 和 wav | `kepu voice --dry` 估价；耳检 0 错；`kepu gate --stage voice` | 只听耳检包里那几十处（约 2 分钟） | `voice` |
-| 6 | 画面 | 分镜 `script/storyboards/epNN.md`；场景代码；联系表 | 引擎的检查（超时、节奏、遮挡、出框、空白）；`gate --stage picture` | 看联系表，逐帧自我批评一轮 | `art`（风格）、引擎 README |
-| 7 | 成片与发布包 | 成片、字幕、逐字稿、B 站分段、讲义 PDF、封面、投稿文案 | `kepu gate --final` 全 ✓ | 作者自己上传（agent 不替作者发布） | `publish` |
+| 6 | 画面 | 分镜 `script/storyboards/epNN.md`；场景代码；联系表 | `kepu board` 节奏预算；引擎的检查（超时、节奏、遮挡、出框、空白）；`gate --stage picture` | 看联系表，逐帧自我批评一轮 | `art`（风格）、引擎 README |
+| 7 | 成片与发布包 | 成片、字幕、逐字稿、B 站分段、讲义 PDF、封面、投稿文案 | `kepu loudness` −16 LUFS；`kepu gate --final` 全 ✓ | 作者自己上传（agent 不替作者发布） | `publish` |
 | 8 | 复盘 | `LESSONS.md` 新条目；词典、规则、检查的升级 | 每个事故都对应一个系统改动 | 作者看一眼 | `retro` |
 
 **顺序可以重叠**：画面可以先用免费的占位配音（`--engine edge`）做，等稿子定了再换正式配音，这样不浪费钱。
@@ -78,10 +78,15 @@ python3 "${CLAUDE_PLUGIN_ROOT}/toolkit/kepu_run.py" init <目录> --engine none 
 ./kepu voice script/episodes/epNN.md
 ./kepu earcheck build script/episodes/epNN.md                                   # 把耳检页发给作者听
 ./kepu earcheck ingest <作者导出的结果>.json                                     # 念错的改掉，重录那几个 beat
+./kepu board script/storyboards/epNN.md                                      # 分镜的节奏预算（大字卡、插卡、间隔）
 # 画面：按引擎 README 写场景代码，分段渲染，每段出联系表，自我批评改一轮；kepu-studio:kepu-av-reviewer 审片
 ./kepu transcript script/episodes/epNN.md && ./kepu notes build notes/epNN.md
+./kepu loudness output/epNN/epNN_final.mp4 --fix                              # 响度不达标才需要
 ./kepu gate script/episodes/epNN.md --final
+./kepu status --html                                                           # 整个系列的进度表
 ```
+
+**开工先看全局**：`./kepu status` 一张表列出每一期走到哪一关、卡在哪、下一步跑什么。作者问“做到哪了”，就跑它。
 
 ## 4. 分派和并行（大活怎么拆）
 

@@ -1,0 +1,55 @@
+# kepu 项目设置（kepu-studio 插件）。改完不用重启，命令每次都会重新读。
+
+[project]
+name = "kepu-studio 宣传片"
+engine = "anime"              # anime（ManimGL 动漫标题卡风）| pixel（像素 RPG）| none（自己的渲染器）
+scripts = "script/episodes"        # 每期稿子
+storyboards = "script/storyboards" # 每期分镜（同名）：kepu board 查节奏预算
+audio = "engine/audio"                # 配音输出：<audio>/<期>/beats.json
+series = "series/系列设定.md"
+notes = "notes"
+review = "review"
+output = "output"
+
+[voice]
+engine = "eleven"                  # eleven（ElevenLabs，花钱）| edge（免费占位，要联网）| say（macOS 离线占位）
+voice_id = "kAIqZ7fZv234ClKXwzDx"  # Susan（中文，《地基之下》《ETH》用的音色）。换音色后要重新做希腊字母试听
+model = "eleven_v4"
+stability = 0.5
+speed = 1.0
+output_format = "mp3_44100_128"
+env_file = ".env"                  # 只在这里放 ELEVENLABS_API_KEY=…；不要提交、不要发给别人
+max_chars = 2000                   # 一次运行最多新合成多少字符；超过就一个字都不发
+chars_per_minute = 260             # 估时用（中文旁白约 220–270 字/分钟）
+beat_gap = 0.6                     # 估时用：beat 之间的停顿（秒）
+edge_voice = "zh-CN-YunxiNeural"
+
+
+[pron]
+greek = "en"                       # 希腊字母读英文（en）或中文课堂读法（zh）
+strict = false                     # true：没有替身字的读音一律拦下要求改写（不送拼音）
+digits = "warn"                    # 读法里的阿拉伯数字：warn 提醒 / hold 拦下 / ok 不管
+
+[levels]
+L1 = "主线"
+L2 = "进阶"
+L3 = "硬核支线"
+max_L3_share = 0.2                 # 一期里 L3 的时长占比上限
+question_every_min = 3.0           # 每隔几分钟给观众一个问题
+max_sentence_chars = 25            # 念出来的中文要短句
+max_beat_seconds = 45
+
+[board]                            # 分镜的节奏预算（kepu board / gate 的 picture 阶段），和系列设定里写的一致
+big_max = 8                        # 大字卡
+insert_max = 6                     # 插卡
+judge_max = 3                      # 签名动作【判】
+push_max = 2                       # 镜头推拉
+white_min = 1                      # 白底（换气）段落
+white_max = 2
+gap_seconds = 20                   # 两次大字卡 / 插卡之间至少隔几秒
+cold_open_seconds = 180            # 冷开场里不查间隔
+
+[release]
+lufs = -16.0                       # 成片响度（B 站、YouTube 都在 −14 到 −16 之间；kepu loudness --fix 一键校正）
+true_peak = -1.5                   # 真峰值上限（dBTP）
+lufs_tolerance = 1.0

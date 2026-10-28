@@ -14,6 +14,11 @@ description: 科普视频成片后的发布包：拼接与响度（−16 LUFS）
   engine/.venv/bin/python engine/assemble.py epNN -o output/epNN/epNN_final.mp4
   ```
   这一步做三件事：拼接；双遍 loudnorm，目标 −16 LUFS、真峰值 −1.5 dBTP；输出 srt。最后看打印出来的实测响度。
+- **任何引擎、任何来源的成片**都可以单独测和校正（gate 的 release 阶段也会测）：
+  ```bash
+  ./kepu loudness output/epNN/epNN_final.mp4          # 实测 LUFS、真峰值
+  ./kepu loudness output/epNN/epNN_final.mp4 --fix    # 两遍 loudnorm → epNN_final.norm.mp4，画面不重编码
+  ```
 - **pixel 引擎**：
   ```bash
   python -m pixel.build epNN --jobs 2

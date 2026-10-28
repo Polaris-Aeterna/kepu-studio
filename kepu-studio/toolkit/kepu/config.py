@@ -8,7 +8,7 @@ from pathlib import Path
 from .util import find_project_root
 
 DEFAULTS = {
-    "project": {"name": "", "scripts": "script/episodes", "engine": "none", "audio": "audio", "series": "series/系列设定.md",
+    "project": {"name": "", "scripts": "script/episodes", "storyboards": "script/storyboards", "engine": "none", "audio": "audio", "series": "series/系列设定.md",
                 "notes": "notes", "review": "review", "output": "output"},
     "voice": {"engine": "eleven", "voice_id": "kAIqZ7fZv234ClKXwzDx", "model": "eleven_v4", "stability": 0.5, "speed": 1.0,
               "similarity_boost": None, "output_format": "mp3_44100_128", "env_file": ".env", "max_chars": 2000,
@@ -17,7 +17,9 @@ DEFAULTS = {
     "pron": {"greek": "en", "strict": False, "digits": "warn", "margin": 3.0},
     "levels": {"L1": "主线", "L2": "进阶", "L3": "硬核支线", "max_L3_share": 0.2, "question_every_min": 3.0,
                "max_sentence_chars": 25, "max_beat_seconds": 45},
-    "release": {"lufs": -16.0, "true_peak": -1.5},
+    "board": {"big_max": 8, "insert_max": 6, "judge_max": 3, "push_max": 2, "white_min": 1, "white_max": 2,
+              "gap_seconds": 20, "cold_open_seconds": 180},
+    "release": {"lufs": -16.0, "true_peak": -1.5, "lufs_tolerance": 1.0},
 }
 
 

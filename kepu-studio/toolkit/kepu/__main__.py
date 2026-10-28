@@ -13,6 +13,9 @@
   stats 稿子 [--cut L1]                   时长、节奏、提问间隔、句长、分级与严谨度
   transcript 稿子 [--timeline t.json]     逐字稿、B 站分段、.srt
   notes new 稿子 | notes build 讲义.md [--no-pdf]
+  board 分镜 [--script 稿子]               分镜的节奏预算：大字卡、插卡、签名动作、推拉、白底段落，数量和间隔
+  loudness 成片.mp4 [--fix] [-o 输出]      成片响度（−16 LUFS），--fix 两遍 loudnorm 校正，画面不重编码
+  status [--html]                         整个系列一张表：每期走到哪一关、下一步跑什么；--html 写 review/status.html
   gate 稿子 [--stage script|voice|picture|release] [--final]
   art deal --subject "题材" [--n 4] [--engine anime|pixel] | art list   美术方向发牌
   selftest                                跑读音引擎的回归测试
@@ -78,6 +81,15 @@ def main(argv=None) -> int:
     p.add_argument("script")
     p.add_argument("--stage", action="append", choices=["script", "voice", "picture", "release"])
     p.add_argument("--final", action="store_true")
+    p = sub.add_parser("board")
+    p.add_argument("storyboard")
+    p.add_argument("--script")
+    p = sub.add_parser("loudness")
+    p.add_argument("file")
+    p.add_argument("--fix", action="store_true")
+    p.add_argument("-o", "--out")
+    p = sub.add_parser("status")
+    p.add_argument("--html", action="store_true")
     p = sub.add_parser("art")
     p.add_argument("op", choices=["deal", "list"])
     p.add_argument("--subject", default="")
@@ -162,6 +174,15 @@ def main(argv=None) -> int:
     if a.cmd == "gate":
         from .gate import check
         return check(Path(a.script), cfg, a.stage, a.final)
+    if a.cmd == "board":
+        from .board import check as board_check
+        return 1 if board_check(Path(a.storyboard), cfg, Path(a.script) if a.script else None)[0] else 0
+    if a.cmd == "loudness":
+        from .loudness import main as loud
+        return loud(Path(a.file), cfg, a.fix, Path(a.out) if a.out else None)
+    if a.cmd == "status":
+        from .status import show
+        return show(cfg, a.html)
     if a.cmd == "art":
         from . import art
         ds = art.directions() if a.op == "list" else art.deal(a.subject, a.n, a.engine, a.seed)

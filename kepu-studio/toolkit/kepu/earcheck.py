@@ -10,10 +10,13 @@
 """
 from __future__ import annotations
 
+import base64
 import html
 import json
 import random
 import re
+import shutil
+import subprocess
 from pathlib import Path
 
 from . import script as S
@@ -22,6 +25,18 @@ from .pron.inventory import standin_reading
 from .timing import write_wav_slice
 from .util import ASSETS
 from .voice import chapter_id
+
+EMBED_LIMIT = 15_000_000           # bytes of audio embedded in the page (one file: open it anywhere, send it to anyone)
+
+
+def _mp3(wav: Path) -> bytes | None:
+    """A small mono mp3 of a clip (for embedding); None when ffmpeg is missing or fails."""
+    if not shutil.which("ffmpeg"):
+        return None
+    mp3 = wav.with_suffix(".mp3")
+    r = subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", str(wav), "-ac", "1", "-b:a", "64k", str(mp3)])
+    return mp3.read_bytes() if r.returncode == 0 and mp3.exists() else None
+
 
 KIND = {"pinyin": "拼音兜底", "standin": "新替身字", "greek": "希腊字母", "auto": "低频词", "latin": "缩写",
         "number": "数字", "control": "抽查"}
@@ -76,14 +91,21 @@ def build(script: Path, cfg, out_dir: Path | None = None) -> Path:
         write_wav_slice(bj.parent / b["file"], clip, max(0.0, t0 - 1.3), t1 + 0.9)
         rows.append({"n": n, "beat": sp["beat"], "kind": sp["kind"], "char": sp.get("char", ""), "reading": sp.get("reading", ""),
                      "say": sp.get("say", ""), "why": sp.get("why", ""), "ctx": sp.get("ctx", ""), "t": round(t0, 2),
-                     "clip": f"clips/{clip.name}"})
+                     "clip": f"clips/{clip.name}", "_mp3": _mp3(clip)})
+    embed = all(r["_mp3"] for r in rows) and sum(len(r["_mp3"]) for r in rows) <= EMBED_LIMIT
+    for r in rows:
+        data = r.pop("_mp3")
+        if embed:
+            r["clip"] = "data:audio/mpeg;base64," + base64.b64encode(data).decode()
     page = (ASSETS / "earcheck.html").read_text(encoding="utf-8")
     page = page.replace("__TITLE__", html.escape(f"耳检 · {chapter}")).replace(
         "__DATA__", json.dumps({"chapter": chapter, "voice_key": cfg.voice_key, "kinds": KIND, "rows": rows},
                                ensure_ascii=False))
     (out_dir / "index.html").write_text(page, encoding="utf-8")
-    (out_dir / "spots.json").write_text(json.dumps(rows, ensure_ascii=False, indent=1), encoding="utf-8")
-    print(f"[earcheck] {chapter}：{len(rows)} 处，{sum(1 for r in rows if r['kind'] == 'control')} 处抽查 → {out_dir / 'index.html'}")
+    (out_dir / "spots.json").write_text(json.dumps([{k: v for k, v in r.items() if k != "clip" or not embed} for r in rows],
+                                                   ensure_ascii=False, indent=1), encoding="utf-8")
+    print(f"[earcheck] {chapter}：{len(rows)} 处，{sum(1 for r in rows if r['kind'] == 'control')} 处抽查 → {out_dir / 'index.html'}"
+          + ("（单个文件，音频已内嵌，可以直接发给别人听）" if embed else "（音频在 clips/，连同文件夹一起打开）"))
     by = {}
     for r in rows:
         by[r["kind"]] = by.get(r["kind"], 0) + 1

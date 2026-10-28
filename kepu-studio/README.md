@@ -27,7 +27,7 @@ skills/        11 个技能，可以用 /kepu-studio:<名字> 调用，也可以
                studio（总流程）new art script pronounce voice notes review publish fix retro
 agents/        4 个独立审稿子 agent：事实核查、教学审稿、审片、美术评委
 hooks/         改完稿子自动跑读音检查（只在 kepu 项目里、只在有问题时说话）
-toolkit/       kepu 工具（Python 3.9+，只用标准库）：读音引擎、配音、耳检、讲义、逐字稿、关卡……
+toolkit/       kepu 工具（Python 3.9+，只用标准库）：读音引擎、配音、耳检、讲义、逐字稿、分镜节奏、响度、关卡、进度表……
 templates/     两套渲染引擎：engine-anime（ManimGL 动漫标题卡，来自 ETH）、engine-pixel（像素 RPG，来自《地基之下》）
 ```
 
@@ -38,6 +38,7 @@ templates/     两套渲染引擎：engine-anime（ManimGL 动漫标题卡，来
    ```bash
    python3 <插件目录>/toolkit/kepu_run.py init 我的系列 --engine anime   # 或 --engine pixel / none
    cd 我的系列 && ./kepu doctor
+   ./kepu status        # 以后随时看：每一期走到哪一关、下一步跑什么
    ```
 3. 常用的说法，直接对 Claude 说：
    - “做第 1 期”
@@ -56,6 +57,7 @@ templates/     两套渲染引擎：engine-anime（ManimGL 动漫标题卡，来
 | 读音、稿子、讲义、关卡 | Python 3.9+（只用标准库） |
 | 配音 | ffmpeg。正式配音用 ElevenLabs 账号（key 只放在项目的 `.env`）；免费的占位配音要 `pip install edge-tts` |
 | 讲义 PDF | Chrome 或 Edge（没有的话，用浏览器打开 HTML 再打印） |
+| 响度、耳检页 | ffmpeg |
 | anime 引擎 | ManimGL 1.7.2（见 `templates/engine-anime/README.md`）、LaTeX、宋体 |
 | pixel 引擎 | numpy、Pillow、中文字体（推荐 Noto Sans SC，OFL 授权） |
 

@@ -65,6 +65,10 @@ description: 给科普视频合成 AI 配音（ElevenLabs，或免费的 edge-tt
 改完之后只重录列出来的 beat：`./kepu voice … --only 07 12`。改完再跑一次 `earcheck build`，只听改过的那几处。
 `kepu gate --stage voice` 会读耳检状态：有没处理的“错”就不放行。
 
+耳检页是**单个 HTML 文件**：音频以 mp3 内嵌在页面里，可以直接发给作者或同学，用手机也能听、能点。
+
+**花钱记录**：每一条付过钱的合成（缓存命中不算）都会追加到 `review/cost.tsv`：日期、期、beat、字符数、音色。`./kepu quota` 会顺带汇总本项目花了多少；`./kepu status` 的表头也会显示。共享账号时，用它对账。
+
 ## 换音色
 
 1. 用 `--only` 试 2–3 个音色。每个音色合成同一段（约 400 字）。

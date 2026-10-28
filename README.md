@@ -1,62 +1,77 @@
 <div align="center">
 
-# 科普番剧工坊 · kepu-studio
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/banner-dark.png">
+  <img alt="科普番剧工坊 kepu-studio：动漫 / 动画 / 游戏风中文科普视频的一条龙工作流，Claude Code 插件" src="docs/images/banner-light.png" width="100%">
+</picture>
 
-**把动漫 / 动画 / 游戏风中文科普视频的整条生产线，装进一个 Claude Code 插件。**<br>
-<sub>An end-to-end Claude Code plugin for anime- and game-style Chinese science explainers.</sub>
+<br><br>
 
-<br>
+![version](https://img.shields.io/badge/version-0.2.0-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![tests](https://img.shields.io/badge/tests-25_passing-2f7d4f?style=flat-square)
 
-![version](https://img.shields.io/badge/version-0.1.1-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![selftest](https://img.shields.io/badge/selftest-17_passing-2f7d4f?style=flat-square)
-
-<br>
-
-<img src="docs/images/hero.png" alt="左：ManimGL 动漫标题卡引擎的一帧；右：像素 RPG 引擎的一帧" width="100%">
-
-<sub>左：ManimGL 动漫标题卡引擎（来自《ETH 之墙》）。右：像素 RPG 引擎（来自《地基之下》）。两张都是用插件自带的引擎、配免费占位配音渲染出来的原始帧。</sub>
+[宣传片](#宣传片) · [它解决什么](#它解决什么) · [工作流](#工作流) · [读音引擎](#读音引擎) · [希腊字母](#希腊字母) · [耳检包](#耳检包) · [美术方向](#美术方向) · [两套引擎](#两套引擎) · [讲义与分级](#讲义与分级) · [0.2 新增](#02-新增) · [安装](#安装) · [命令](#命令)
 
 </div>
 
 <br>
 
-这套流程合并了两部作品的实战经验，十几轮返工的教训都已经写进了工具和关卡：
+把**动漫 / 动画 / 游戏风中文科普视频**的整条生产线装进一个 Claude Code 插件：选题、美术方向、讲义、稿子、读音、配音、耳检、画面、发布、复盘，每一步都有一道机器关卡，人只在高风险的地方出手。
 
-- **《地基之下》**：中文数理逻辑系列。像素 RPG 风，两季 27 集，每集配一讲讲义。
-- **《ETH 之墙》**：复杂性理论系列。ManimGL 做的 EVA 标题卡风，6 期，每期 25–30 分钟，另有英文版。
+它合并自两部作品的实战，十几轮返工的教训都已经写进了工具和关卡里：
 
-装好以后，直接对 Claude 说话就行：“开一个新系列，讲图论”“做第 1 期”“这期配音”“第 3 期 2:15 的‘数’读错了”。
+| 《地基之下》 | 《ETH 之墙》 |
+|---|---|
+| 数理逻辑系列。像素 RPG 风，两季 27 集，每集配一讲讲义 | 复杂性理论系列。ManimGL 做的 EVA 标题卡风，6 期，每期 25–30 分钟，另有英文版 |
+
+装好以后直接对 Claude 说话：“开一个新系列，讲图论”“做第 1 期”“这期配音”“第 3 期 2:15 的‘数’读错了”。
+
+<table>
+<tr>
+<td align="center"><b>11</b><br><sub>技能</sub></td>
+<td align="center"><b>4</b><br><sub>独立审稿 agent</sub></td>
+<td align="center"><b>709</b><br><sub>内置读音词条</sub></td>
+<td align="center"><b>25</b><br><sub>回归测试，每条都是真事故</sub></td>
+<td align="center"><b>2</b><br><sub>渲染引擎</sub></td>
+<td align="center"><b>18</b><br><sub>动漫 / 游戏美术方向</sub></td>
+</tr>
+</table>
+
+## 宣传片
+
+<p align="center">
+  <a href="https://github.com/Polaris-Aeterna/kepu-studio/releases/download/v0.2.0/kepu-studio_promo.mp4"><img src="docs/images/teaser.gif" alt="宣传片片段：配音把“长子句”念成 zhǎng；片名卡；读音引擎把“长”定成 cháng，发给模型的是“尝子句”" width="82%"></a>
+  <br>
+  <sub>▶ 点图看完整宣传片（1 分 45 秒 · 1080p · 有声）。稿子、读音、配音、画面全部是 kepu-studio 自己做的，源码在 <a href="examples/promo"><code>examples/promo</code></a>。</sub>
+</p>
 
 ## 它解决什么
 
 | 痛点 | kepu 的做法 |
 |---|---|
-| AI 配音老念错多音字：长子句念成 zhǎng，可数、方差、“行”也常错 | **合成前把读音定死**。三层读音词典、上下文规则、分词陷阱检测一起把关；定下来的读音换成只有一个读音的替身字，字幕照写原字。还没定的地方直接拦下，不合成。 |
-| 希腊字母念不对：σ 念成 sick，φ 念成“非” | **默认按英文念**。每个音色只校准一次，结果所有项目共用。 |
-| 不知道哪里念错了，全片复听又太累 | **耳检包**：只截出高风险的几十处，每处 2–3 秒，一页点完。 |
-| 画风像 PPT，或者只是贴了一层游戏皮 | **taste 方法**：18 个动漫 / 游戏方向随机发牌，写 IDEA 句、过竞品测试、出概念帧，再由独立评委打分。 |
-| 讲义、逐字稿、字幕、B 站分段互相对不上 | **同一份稿子**生成全部：讲义 PDF、逐字稿、分段、.srt。 |
-| 有的观众跟不上，有的嫌浅 | **分级**：难度分 L1 主线、L2 进阶、L3 硬核支线；严谨度分完整、骨架、黑箱。可以一键出只含主线的精简版。 |
-| “这期做完了吗？”没有统一答案 | **一张表的关卡**：脚本、配音、画面、发布四个阶段，只要有 ✗ 就不往下走。 |
-| 同样的错误反复出现 | **复盘回路**：每个事故都要回答“为什么没被更早的关卡拦住”，然后改系统，并补一条回归测试。 |
+| AI 配音老念错多音字：长子句念成 zhǎng，可数、方差、“行”也常错 | **合成前把读音定死**。三层读音词典、上下文规则、分词陷阱检测一起把关；定下的读音换成只有一个读音的替身字，字幕照写原字。没定的地方直接拦下，不合成 |
+| 希腊字母念不对：σ 念成 sick，φ 念成“非” | **默认按英文念**。每个音色只校准一次，所有项目共用 |
+| 不知道哪里念错了，全片复听又太累 | **耳检包**：只截出高风险的几十处，每处 2–3 秒，一页点完，约 2 分钟 |
+| 画风像 PPT，或者只是贴了一层游戏皮 | **taste 方法**：18 个方向随机发牌，写 IDEA 句、过竞品测试、出概念帧，独立评委打分 |
+| 讲义、逐字稿、字幕、B 站分段互相对不上 | **同一份稿子**生成全部 |
+| 有的观众跟不上，有的嫌浅 | **分级**：L1 主线、L2 进阶、L3 硬核支线；严谨度分完整、骨架、黑箱。一键出主线精简版 |
+| 大字卡用到第十次，就没有重音了 | **分镜节奏预算**：大字卡、插卡、签名动作有上限，两次之间至少隔 20 秒 |
+| “这期做完了吗？”没有统一答案 | **关卡**：脚本、配音、画面、发布四个阶段一张表，有 ✗ 就不往下走；`kepu status` 看整个系列 |
+| 同样的错误反复出现 | **复盘回路**：每个事故都要回答“为什么没被更早的关卡拦住”，然后改系统，补一条回归测试 |
 
-## 九个阶段，九道关卡
+## 工作流
 
-```mermaid
-flowchart LR
-  S0["立项<br/>系列设定 · 事故预演"] --> S1["美术方向<br/>发牌 · 概念帧 · 评委"]
-  S1 --> S2["讲义先行"]
-  S2 --> S3["写稿<br/>分级 · 读法标记"]
-  S3 -->|"lint：0 处拦下"| S4["审稿<br/>事实 · 教学"]
-  S4 -->|"🔴 清零"| S5["配音<br/>ElevenLabs"]
-  S5 -->|"耳检：0 错"| S6["画面<br/>ManimGL / 像素"]
-  S6 -->|"遮挡 · 节奏 · 联系表"| S7["成片 · 发布包"]
-  S7 -->|"gate --final"| S8["复盘"]
-  S8 -. "事故 → 词条 · 规则 · 检查 · 测试" .-> S3
-```
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/images/pipeline-dark.png">
+  <img alt="九个阶段：立项、美术方向、讲义先行、写稿、审稿、配音、画面、发布、复盘。每个阶段下面是机器关卡和人要看的地方；复盘回路把每个事故改成词典、规则、检查和回归测试" src="docs/images/pipeline-light.png" width="100%">
+</picture>
 
-每个阶段都有对应的技能（`/kepu-studio:new`、`art`、`script`、`pronounce`、`voice`、`notes`、`review`、`publish`、`fix`、`retro`），由总技能 `/kepu-studio:studio` 串起来。
+- **技能**：每个阶段一个（`/kepu-studio:new`、`art`、`notes`、`script`、`pronounce`、`review`、`voice`、`publish`、`fix`、`retro`），总技能 `/kepu-studio:studio` 把它们串起来。
+- **审稿 agent**：事实核查、教学审稿、审片、美术评委，四个都独立于写稿的那个。
+- **钩子**：Claude 每改一次稿子，自动跑一次读音检查；没问题就不说话。
 
-## 读音引擎：一个词只定一次
+## 读音引擎
+
+一个词只定一次，以后永远这么念。
 
 ```console
 $ ./kepu pron "原来的长子句，可以拆成短的；随机变量的方差为零，设σ等于零点五"
@@ -73,46 +88,44 @@ $ ./kepu lint script/episodes/ep01.md
   ✗ 未定  OpenAI 宣布【了】解答         分词陷阱：词条“了解”说 liǎo，但切成“解答”时念 le
 ```
 
-- **决定只来自三个地方**：稿子里的标记 `字〔读音〕`、三层词典（插件内置约 700 条 → 个人 `~/.kepu` → 项目），以及上下文规则。通用词典（jieba + pypinyin）只负责“发现风险”，不替你做决定。原因是它在理工科词上常出错：方差标成 chà，相变标成 xiāng，背包标成 bēi，用处标成 chǔ。
-- **分词陷阱检测**：同一个字在两种说得通的切分里读音不同，就拦下来问人。例如长子+句 / 长+子句、东西+藏 / 东+西藏、能量出、零处分组、宣布了解答。
-- **替身字**：必须只有一个读音，而且两岸同音（“档”“储”在台湾读法不同，已经撤掉）。新的替身字第一次用时会自动进耳检包。
-- **每次改稿都会自动检查**：插件带了一个钩子，Claude 一改稿子就跑 `kepu lint`。
+- **决定只来自三处**：稿子里的标记 `字〔读音〕`；三层词典（内置 709 条 → 个人 `~/.kepu` → 项目）；上下文规则。通用词典（jieba + pypinyin）只负责发现风险，不替你做决定，因为它在理工科词上常出错：方差标成 chà，相变标成 xiāng，背包标成 bēi。
+- **分词陷阱**：同一个字在两种说得通的切分里读音不同，就拦下来问人：长子 + 句 / 长 + 子句、东西 + 藏 / 东 + 西藏、宣布了解答。
+- **替身字**：必须只有一个读音，而且两岸同音。新替身字第一次用时，自动进耳检包。
 
-| 在两部作品全部稿子上的验证 | 结果 |
+| 在两部作品全部稿子上验证 | 结果 |
 |---|---|
-| 51 个文件、5860 条旁白 | 拦下 812 处 → **26 处**，剩下的几乎都是真实的分词陷阱 |
-| 《地基之下》第五轮审计的 537 处风险 | 和审计结论一致 **93.2%**，拦下 1.1%；不一致的那部分是作者后来改定的“当成念 dāng” |
-| 和《ETH》审定读音逐处比对（6 期，4724 处） | 4648 处相同，**新增 70 处保护**；还发现 ETH 现行词规则里一个潜伏的误配（`数完` 误配进“计数完美匹配”） |
+| 51 个文件、5860 条旁白 | 拦下从 812 处降到 **26 处**，剩下的几乎都是真实的分词陷阱 |
+| 《地基之下》第五轮审计的 537 处风险 | 和审计结论一致 **93.2%**，拦下 1.1%；不一致的是作者后来改定的“当成念 dāng” |
+| 和《ETH》审定读音逐处比对（6 期，4724 处） | 4648 处相同，**新增 70 处保护**；还发现 ETH 词规则里一处潜伏的误配（`数完` 会误配进“计数完美匹配”） |
 
-## 希腊字母：英文读音，每个音色校准一次
+## 希腊字母
 
 <img src="docs/images/greek_audition.png" alt="希腊字母试听页：每个字母 2–3 个候选写法，各配一段试听" width="100%">
 
-- 多音节字母送英文拼写，比如 alpha、sigma、lambda。
-- 单音节字母另外准备了能确定念出英文音的写法，作为候选：τ→套（tau）、ψ→赛（psi）。
-- 默认写法是作者在默认音色 Susan · eleven_v4 上逐个试听选定的（2026-10-29）：π→pie、φ→phi、χ→kai、ν→nu、λ→Lambda、τ→套、ψ→赛，其余字母用英文拼写。
-- 换了音色，所有字母都按“没验证”处理，需要重新试听。φ 虽然已经验证过，每期第一次出现仍然会进耳检包，因为“φ 或非 φ”这类逻辑式里曾经念成 fi。
-- `kepu greek audition` 合成全部候选，生成上面这个试听页（音频直接嵌在页面里），大约 800 字符。选完导出，再 `kepu greek ingest`，结果写进音色档案，所有项目共用。
+- **按英文念**：多音节字母送英文拼写（alpha、sigma、lambda）；单音节字母另备能确定念出英文音的写法作候选（τ→套、ψ→赛）。
+- **默认音色已逐个试听选定**（Susan · eleven_v4，2026-10-29）：π→pie、φ→phi、χ→kai、ν→nu、λ→Lambda、τ→套、ψ→赛，其余用英文拼写。
+- **换了音色**：所有字母按“没验证”处理。`kepu greek audition` 生成上面这个试听页（约 800 字符，音频内嵌），选完 `kepu greek ingest`，结果写进音色档案，所有项目共用。
+- **φ 例外**：已经验证过，但每期第一次出现仍进耳检包，因为“φ 或非 φ”这类逻辑式里曾经念成 fi。
 
-## 耳检包：只听高风险的几十处
+## 耳检包
 
 <img src="docs/images/earcheck.png" alt="耳检页：每处一段从目标字前 1.3 秒开始的片段，标注应念的读音，点对或错" width="100%">
 
-- **会被收进来的**：送拼音的地方、新替身字、还没验证的希腊字母、低频词、缩写、数字，再加 5 处随机抽查作为对照组。
-- **快捷键**：J/K 上下翻，空格播放，1 标对，2 标错。
-- **用法**：导出结果后运行 `kepu earcheck ingest`。判错的替身字以后自动换掉，同时列出需要重录的 beat。
+- **收进来的**：送拼音的地方、新替身字、没验证的希腊字母、低频词、缩写、数字，再加 5 处随机抽查作对照组。
+- **单个文件**：音频以 mp3 内嵌在页面里，可以直接发给作者或同学，用手机也能听、能点。快捷键 J/K 翻页，空格播放，1 对，2 错。
+- **结果写回去**：`kepu earcheck ingest` 把判断记进音色档案，判错的替身字以后自动换掉，并列出要重录的 beat。
 
-## 美术方向：从题材里长出来
+## 美术方向
 
 <img src="docs/images/art_directions.png" alt="《ETH 之墙》做过的六个方向概念帧：纪念碑谷、Mini Metro、女神异闻录 5、EVA、NieR、空洞骑士" width="100%">
 
-<sub>《ETH 之墙》做过的六个方向（每个方向一张标题卡 + 一张内容帧），最后选了 EVA。生成这些帧的代码就在 anime 引擎的 `concepts/` 里。</sub>
+<sub>《ETH 之墙》做过的六个方向，每个方向一张标题卡 + 一张内容帧，最后选了 EVA。生成这些帧的代码就在 anime 引擎的 <code>concepts/</code> 里。</sub>
 
 1. **盘点题材**：列出 8–12 样只属于这个题材的东西。
-2. **发牌**：`kepu art deal`，脚本发，模型不挑，免得每次都落回同一套默认风格。
-3. **IDEA 句加竞品测试**：“在这个系列里，[题材自己的东西] 变成 [画风装置]”。把题材换成别的，这句话还成立的话，说明它只是一层皮。
-4. **概念帧**：每个方向出两帧，用最终的渲染器画。
-5. **独立评委打分**：设计 40 / 可用 30 / 创意 20 / 内容 10。出现渐变、发光、细线装饰、编号、等宽标签，总分封顶 6.5。
+2. **发牌**：`kepu art deal`。脚本发牌，模型不挑，免得每次都落回同一套默认风格。
+3. **IDEA 句 + 竞品测试**：“在这个系列里，[题材自己的东西] 变成 [画风装置]”。换个题材这句话还成立，说明它只是一层皮。
+4. **概念帧**：每个方向两帧，用最终的渲染器画。
+5. **独立评委**：设计 40 / 可用 30 / 创意 20 / 内容 10。出现渐变、发光、细线装饰、编号、等宽标签，总分封顶 6.5。
 6. **落成系统**：配色 token、三档字号、签名动作、节奏预算。
 
 <details>
@@ -142,97 +155,134 @@ $ ./kepu lint script/episodes/ep01.md
 只借这些画风的构图、色彩和动作语法，不用任何原作的角色、logo、字体或素材。
 </details>
 
-## 两套渲染引擎
+## 两套引擎
 
 <table>
 <tr>
-<td width="50%"><img src="docs/images/anime_cnf.png" alt="ManimGL 引擎：子句与 CNF"></td>
-<td width="50%"><img src="docs/images/anime_boolvar.png" alt="ManimGL 引擎：布尔变量"></td>
+<td width="50%"><img src="docs/images/anime_real.png" alt="《ETH 之墙》第一期的一帧：n³ 与 2ⁿ 每秒十亿次的对比，2ⁿ 一侧“约 36 年”为红"></td>
+<td width="50%"><img src="docs/images/pixel_real.png" alt="《地基之下》第十二集的一帧：像素 RPG 风的图灵机状态表和机器人"></td>
 </tr>
 </table>
+
+<sub>左：《ETH 之墙》第一期。右：《地基之下》第十二集。都是成片截图。</sub>
 
 | | anime（ManimGL 1.7.2） | pixel（像素 RPG） |
 |---|---|---|
 | 来自 | 《ETH 之墙》 | 《地基之下》 |
 | 依赖 | venv + manimgl + LaTeX + 宋体 | 只要 numpy + Pillow |
-| 字幕 | 宋体粗字烧录，跟随底色反相 | RPG 对话框，打字机效果，逐字同步 |
-| 节奏 | 引擎自动计数大字卡、插卡、判定线，超预算就报警 | 遮挡、出框、空白都有自动检查 |
-| 配音 | 读取 `kepu voice` 生成的 `beats.json`（逐字时间戳，精度约一帧） | 同左 |
+| 字幕 | 宋体粗字烧录，跟着底色反相 | RPG 对话框，打字机效果，逐字同步 |
+| 节奏 | 引擎自动数大字卡、插卡、判定线，超预算就警告 | 遮挡、出框、空白自动检查 |
+| 配音 | 读 `kepu voice` 生成的 `beats.json`，逐字时间戳，精度约一帧 | 同左 |
 
-## 讲义 · 逐字稿 · 分级
+## 讲义与分级
+
+<table>
+<tr>
+<td width="56%" valign="top">
 
 - **讲义先写，稿子后写**：屏幕上的定理从讲义里复制。
-- `kepu notes build` 生成可打印的 HTML 和 PDF，公式由 KaTeX 渲染。
-- 讲义里的元素：
+- `kepu notes build` 生成可打印的 HTML 和 PDF，公式用 KaTeX 渲染。里面有：
   - 本期地图（三档目标）、进阶框、硬核支线框；
   - 定理旁的严谨度徽章；
-  - 常见误解卡与实情卡；
-  - ★ 到 ★★★ 的习题；
-  - 带读音的术语表。
+  - 常见误解卡和实情卡；
+  - ★ 到 ★★★ 的习题、带读音的术语表。
 - **严谨契约**：视频里的角标可以比讲义低，不能比讲义高。
-- `kepu stats` 会统计：
-  - 各难度等级的时长占比；
-  - 有没有从 L1 直接跳到 L3；
-  - 提问间隔、句长。
-- `--cut L1` 输出只保留主线的精简版清单。
+- `kepu stats` 统计各级时长占比、L1 有没有直接跳到 L3、提问间隔、句长；`--cut L1` 出只留主线的精简版。
 - `kepu transcript` 从同一份稿子生成逐字稿、B 站分段、.srt，三者天然一致。
 
-<p align="center"><img src="docs/images/handout.png" alt="讲义 PDF 的一页：本期地图、进阶框、硬核支线框、严谨度徽章" width="70%"></p>
+</td>
+<td width="44%" valign="top"><img src="docs/images/handout.png" alt="讲义 PDF 的一页：本期地图、进阶框、硬核支线框、严谨度徽章"></td>
+</tr>
+</table>
 
-## 元认知：让流程自己发现自己的错
+## 0.2 新增
+
+**分镜节奏预算**（`kepu board`）：数大字卡、插卡、签名动作、镜头推拉、白底段落，查两次之间的间隔和每屏的强调色。它在《ETH 之墙》全部 6 期分镜上校准过，数出来的次数和当时手工统计的表完全一致。
+
+```console
+$ ./kepu board script/storyboards/ep1_sat.md
+分镜节奏 · ep1_sat.md：大字 5、插卡 4、【判】3、推拉 2、白底 1 段
+  ✓ 大字卡 5 次（上限 8）
+  ✓ 插卡 4 次（上限 6）
+  ✓ 签名动作【判】 3 次（上限 3）
+  ✓ 镜头推拉 2 次（上限 2）
+  ✓ 白底段落 1 段（建议 1–2）
+  ✓ 大字卡 / 插卡之间 ≥ 20 秒（冷开场 3 分钟内不查）
+  通过
+```
+
+**系列进度表**（`kepu status`）：每一期走到哪一关、卡在哪、下一步跑什么；`--html` 另写一页进度表。
+
+```console
+$ ./kepu status
+kepu-studio 宣传片 · 1 期 · 引擎 anime · 已花 450 字符
+  期      标题                时长   稿子  分镜  配音  耳检  讲义  成片  下一步
+  promo   kepu-studio 宣传片  1.6′   ✓     ✓     ✓     ·     ·     ✓     kepu earcheck build script/episodes/promo.md
+```
+
+**响度**（`kepu loudness`）：测综合响度和真峰值；`--fix` 两遍 loudnorm 校正到 −16 LUFS、真峰值 −1.5 dBTP，画面不重编码。`gate` 发布前会测。
+
+**还有**：花钱记录 `review/cost.tsv`（每条付费合成一行，共享账号时对账）；耳检页变成单个 HTML 文件。完整列表见 [CHANGELOG](CHANGELOG.md)。
+
+## 元认知
+
+让流程自己发现自己的错：
 
 1. **事故预演**：开工前假设“发布后被骂了”，写下最可能的 5 个原因。每个原因对应一道关卡；对应不上，就新加一道检查。
 2. **决定账本**：读音、配色、比喻、希腊字母，作者定过的都写进文件，不靠任何人的记忆。
-3. **检查器先校准**：新的检查器先喂已知的坏例子，确认判得出来。whisper 会把念错的字按上下文“纠正”回来，所以不拿它验收读音。
-4. **人的注意力只花在高风险处**：耳朵听耳检包，眼睛看联系表；作者只回答偏好题，而且每题都给候选。
+3. **检查器先校准**：新检查器先喂已知的坏例子（`kepu board` 就是拿 ETH 的 6 期分镜校准的）。whisper 会按上下文把念错的字“纠正”回来，所以不拿它验收读音。
+4. **人的注意力只花在高风险处**：耳朵听耳检包，眼睛看联系表；作者只回答偏好题，每题都给候选。
 5. **复盘回路**：同一类错误出现第二次，说明上次只修了个例，没修系统。
 
-两部作品的完整复盘见 [`lessons.md`](kepu-studio/skills/studio/references/lessons.md)。每一条都写成“事 → 根子 → 以后 → 插件里落在哪”。
+两部作品的完整复盘在 [`lessons.md`](kepu-studio/skills/studio/references/lessons.md)，每一条都写成“事 → 根子 → 以后 → 插件里落在哪”。
 
 ## 安装
 
 > 这是**私有仓库**。请作者在 Settings → Collaborators 里把你的 GitHub 账号加进来。
 
-**Claude Code（推荐）**。需要你的 git 能访问这个私有仓库：
+**Claude Code（推荐）**，需要你的 git 能访问这个仓库：
 
 ```bash
 claude plugin marketplace add Polaris-Aeterna/kepu-studio
 claude plugin install kepu-studio@kepu-studio-market
 ```
 
-**从压缩包安装**。在 [Releases](https://github.com/Polaris-Aeterna/kepu-studio/releases) 下载 `kepu-studio.zip`，解压，然后：
+**从压缩包装**：在 [Releases](https://github.com/Polaris-Aeterna/kepu-studio/releases) 下载 `kepu-studio.zip`，解压后：
 
 ```bash
 claude plugin marketplace add ./kepu-studio
 claude plugin install kepu-studio@kepu-studio-market
 ```
 
-**Claude 桌面版 / Cowork**：进入 Customize → Plugins → Add → Upload plugin，选 Releases 里的 `kepu-studio-plugin.zip`。
+**Claude 桌面版 / Cowork**：Customize → Plugins → Add → Upload plugin，选 Releases 里的 `kepu-studio-plugin.zip`。
 
 **只想试试**：`claude --plugin-dir ./kepu-studio`。
 
-## 快速开始
+## 命令
 
 ```bash
 python3 <插件目录>/toolkit/kepu_run.py init 我的系列 --engine pixel   # 或 --engine anime / none
 cd 我的系列
 ./kepu doctor        # 逐项检查环境
-./kepu selftest      # 读音引擎回归测试
+./kepu selftest      # 回归测试
 ```
 
 然后在 Claude 里说“开一个新系列，讲 ××”。也可以直接用命令：
 
 | 命令 | 作用 |
 |---|---|
-| `./kepu lint 稿子` | 写稿检查：格式、读法、多音字，每一处都附现成修法 |
+| `./kepu status [--html]` | 整个系列一张表：每期走到哪一关、下一步跑什么 |
+| `./kepu lint 稿子` | 写稿检查：格式、读法、多音字，每一处附现成修法 |
 | `./kepu lexicon add "长〔cháng〕子句" [--scope user]` | 定一个词的读音，以后都这么念 |
-| `./kepu stats 稿子 [--cut L1]` | 时长、节奏、提问间隔、分级占比，以及主线精简版 |
-| `./kepu voice 稿子 --dry` / `--only 03 04` / `--engine edge` | 估价 / 只合成指定 beat / 用免费占位配音 |
+| `./kepu stats 稿子 [--cut L1]` | 时长、节奏、提问间隔、分级占比，主线精简版 |
+| `./kepu voice 稿子 --dry` / `--only 03 04` / `--engine edge` | 估价 / 只合成指定 beat / 免费占位配音 |
 | `./kepu earcheck build 稿子` / `ingest 结果.json` | 生成耳检包 / 把耳检结果写回 |
 | `./kepu greek audition` / `ingest` | 按音色校准希腊字母读音 |
 | `./kepu art deal --subject "题材"` | 美术方向发牌 |
+| `./kepu board 分镜` | 分镜节奏预算 |
 | `./kepu notes new 稿子` / `build 讲义.md` | 讲义骨架 / 生成 HTML 和 PDF |
 | `./kepu transcript 稿子` | 逐字稿、B 站分段、.srt |
+| `./kepu loudness 成片.mp4 [--fix]` | 响度测量 / 校正到 −16 LUFS |
 | `./kepu gate 稿子 [--final]` | 四个阶段的关卡汇总成一张表 |
 
 ## 仓库结构
@@ -240,7 +290,9 @@ cd 我的系列
 ```
 .
 ├── .claude-plugin/marketplace.json     # 插件市场（kepu-studio-market）
-├── docs/images/                        # README 用图
+├── CHANGELOG.md
+├── docs/images/                        # README 用图；docs/src/ 是横幅和流程图的源文件（render.sh 重出）
+├── examples/promo/                     # 宣传片的稿子、分镜、场景代码、音效合成
 └── kepu-studio/                        # 插件本体
     ├── .claude-plugin/plugin.json
     ├── skills/      studio new art script pronounce voice notes review publish fix retro
@@ -252,6 +304,6 @@ cd 我的系列
 
 ## 许可与来源
 
-- 读音词表由 jieba 和 pypinyin 的词典生成，两者都是 MIT 许可，详见 [`THIRD_PARTY.md`](kepu-studio/toolkit/kepu/data/THIRD_PARTY.md)。
-- taste-skill 本身没有打包进来（它的分发许可没有写明）。插件里附带了它迁移到视频上的浓缩版；如果你本机装了 taste-skill，art 技能会自动读它。
-- 两套引擎和整套流程来自作者自己的两部作品。
+- 读音词表由 jieba 和 pypinyin 的词典生成，两者都是 MIT 许可，见 [`THIRD_PARTY.md`](kepu-studio/toolkit/kepu/data/THIRD_PARTY.md)。
+- taste-skill 本身没有打包进来（它的分发许可没有写明）。插件附带了它迁移到视频上的浓缩版；本机装了 taste-skill 的话，art 技能会自动读原文。
+- 两套引擎、整套流程、宣传片里的画面和配音，都来自作者自己的两部作品。音效和底乐用 numpy 合成，没有采样。

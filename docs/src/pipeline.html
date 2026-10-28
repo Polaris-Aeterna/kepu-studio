@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>kepu-studio pipeline</title>
+<!-- README 流程图（代替渲染不出来的 Mermaid）。render.sh 以 2 倍像素出图；?theme=light 出浅色版。内容与 skills/studio/SKILL.md 的九个阶段一致。 -->
+<style>
+  :root { --bg:#0A0A0A; --surface:#151515; --ink:#ECEAE4; --ink2:#8D8A84; --dim:#3C3B39; --red:#D8361F; }
+  :root.light { --bg:#EEEBE3; --surface:#E4E0D6; --ink:#0A0A0A; --ink2:#5E5B55; --dim:#B9B5AC; --red:#C42E19; }
+  * { box-sizing:border-box; margin:0; }
+  html, body { width:1600px; height:650px; overflow:hidden; background:var(--bg); }
+  body { position:relative; color:var(--ink); font-family:"Songti SC", "Noto Serif SC", serif; }
+  .kicker { position:absolute; left:64px; top:52px; font:600 16px/1 Baskerville, "Times New Roman", serif; letter-spacing:.34em; color:var(--ink2); }
+  h2 { position:absolute; left:62px; top:80px; font-weight:900; font-size:52px; line-height:1.1; transform:scaleX(.86); transform-origin:left top; white-space:nowrap; }
+  .legend { position:absolute; right:64px; top:100px; font-size:20px; color:var(--ink2); display:flex; gap:28px; }
+  .legend span { display:inline-flex; align-items:center; gap:9px; }
+  .g { width:5px; height:20px; background:var(--red); display:inline-block; }
+  .h { width:11px; height:11px; border:1.5px solid var(--ink2); border-radius:50%; display:inline-block; }
+  .line { position:absolute; left:64px; right:64px; top:300px; height:2px; background:var(--ink); }
+  .col { position:absolute; top:172px; width:152px; }
+  .col:last-of-type .node { }
+  .num { font:40px/1 Baskerville, "Times New Roman", serif; color:var(--ink2); }
+  .name { margin-top:10px; font-weight:900; font-size:32px; line-height:1.15; height:62px; white-space:nowrap; transform:scaleX(.92); transform-origin:left top; }
+  .node { position:absolute; top:121px; left:0; width:14px; height:14px; background:var(--ink); }
+  .skill { margin-top:42px; font:16px/1.3 ui-monospace, "SF Mono", Menlo, monospace; color:var(--ink2); height:20px; }
+  .gate code { font:16px ui-monospace, "SF Mono", Menlo, monospace; white-space:nowrap; }
+  .gate { margin-top:12px; padding:10px 10px 10px 13px; background:var(--surface); border-left:5px solid var(--red); font-size:19px; line-height:1.45; height:84px; white-space:nowrap; }
+  .human { margin-top:16px; padding-left:20px; position:relative; font-size:19px; line-height:1.45; color:var(--ink2); }
+  .human::before { content:""; position:absolute; left:0; top:9px; width:10px; height:10px; border:1.5px solid var(--ink2); border-radius:50%; }
+  .loop { position:absolute; left:70px; right:126px; top:604px; height:2px; background-image:linear-gradient(90deg, var(--ink2) 0 7px, transparent 7px 13px); background-size:13px 2px; }
+  .loop-up-l { position:absolute; left:70px; top:562px; width:2px; height:44px; background:var(--ink2); }
+  .loop-up-r { position:absolute; right:126px; top:562px; width:2px; height:44px; background:var(--ink2); }
+  .arrow { position:absolute; left:64px; top:550px; width:0; height:0; border-left:7px solid transparent; border-right:7px solid transparent; border-bottom:12px solid var(--ink2); }
+  .loop-label { position:absolute; left:50%; top:591px; transform:translateX(-50%); padding:0 16px; background:var(--bg); font-size:20px; color:var(--ink2); white-space:nowrap; }
+  .loop-label b { color:var(--ink); }
+</style>
+<script>if (location.search.includes("light")) document.documentElement.classList.add("light");</script>
+</head>
+<body>
+  <div class="kicker">WORKFLOW · NINE STAGES, NINE GATES</div>
+  <h2>九个阶段，每个阶段一道关</h2>
+  <div class="legend"><span><i class="g"></i>机器关卡：有 ✗ 就停下来修</span><span><i class="h"></i>人只看这里</span></div>
+  <div class="line"></div>
+  <div id="cols"></div>
+  <div class="loop"></div><div class="loop-up-l"></div><div class="loop-up-r"></div><div class="arrow"></div>
+  <div class="loop-label">复盘回路：每个事故都改成<b>词典 / 规则 / 检查 + 回归测试</b>，同一个错不出第二次</div>
+<script>
+const S = [
+  ["0", "立项", "/new", "设定每节填满<br>事故预演", "拍板选题"],
+  ["1", "美术方向", "/art", "IDEA 句<br>独立评委打分", "从样张里选"],
+  ["2", "讲义先行", "/notes", "<code>notes build</code><br>出 PDF", "数学对不对"],
+  ["3", "写稿", "/script", "<code>lint</code> 0 拦下<br><code>stats</code> 达标", "读一遍"],
+  ["4", "审稿", "/review", "必改清零<br>数字可复算", "必改 + 前 10 条"],
+  ["5", "配音", "/voice", "<code>--dry</code> 先估价<br>耳检 0 错", "耳检包 2 分钟"],
+  ["6", "画面", "/art + 引擎", "<code>board</code> 预算内<br>渲染无警告", "联系表"],
+  ["7", "发布", "/publish", "−16 LUFS<br><code>gate --final</code>", "自己上传"],
+  ["8", "复盘", "/retro", "事故 →<br>规则 + 测试", "看一眼"],
+];
+const host = document.getElementById("cols");
+S.forEach(([n, name, skill, gate, human], i) => {
+  const c = document.createElement("div");
+  c.className = "col";
+  c.style.left = (64 + i * 165.5) + "px";
+  c.innerHTML = `<div class="node"></div><div class="num">${n}</div><div class="name">${name}</div>` +
+    `<div class="skill">${skill}</div><div class="gate">${gate}</div><div class="human">${human}</div>`;
+  host.appendChild(c);
+});
+</script>
+</body>
+</html>

@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>kepu-studio banner</title>
+<!-- README 横幅。render.sh 用无头 Chrome 以 2 倍像素出图；?theme=light 出浅色版。配色与《ETH 之墙》引擎一致：一底一墨一强调色。 -->
+<style>
+  :root { --bg:#0A0A0A; --ink:#ECEAE4; --ink2:#8D8A84; --dim:#3C3B39; --red:#D8361F; --edge:#2A2A2A; }
+  :root.light { --bg:#EEEBE3; --ink:#0A0A0A; --ink2:#5E5B55; --dim:#B9B5AC; --red:#C42E19; --edge:#CFCAC0; }
+  * { box-sizing:border-box; margin:0; }
+  html, body { width:1280px; height:480px; overflow:hidden; background:var(--bg); }
+  body { position:relative; color:var(--ink); font-family:"Songti SC", "Noto Serif SC", serif; }
+  .kicker { position:absolute; left:64px; top:66px; font:600 13px/1 Baskerville, "Times New Roman", serif; letter-spacing:.34em; color:var(--ink2); }
+  h1 { position:absolute; left:58px; top:96px; font-weight:900; font-size:124px; line-height:1; letter-spacing:.01em; transform:scaleX(.8); transform-origin:left top; white-space:nowrap; }
+  .rule { position:absolute; left:64px; top:250px; width:72px; height:6px; background:var(--red); }
+  .tag { position:absolute; left:64px; top:286px; font-size:23px; line-height:1.5; font-weight:700; }
+  .sub { position:absolute; left:64px; top:330px; font-size:16px; line-height:1.9; color:var(--ink2); width:560px; }
+  .sub b { color:var(--ink); font-weight:700; }
+  .series { position:absolute; left:64px; bottom:46px; font:14px/1 Baskerville, "Times New Roman", "Songti SC", serif; color:var(--ink2); letter-spacing:.06em; }
+  .series i { font-style:normal; color:var(--ink); }
+  figure { position:absolute; margin:0; }
+  figure img { display:block; width:100%; outline:1px solid var(--edge); }
+  figcaption { margin-top:9px; font:13px/1 Baskerville, "Times New Roman", "Songti SC", serif; color:var(--ink2); letter-spacing:.04em; }
+  figcaption b { color:var(--ink); font-family:"Songti SC", serif; font-weight:700; letter-spacing:0; margin-right:8px; }
+  .f1 { left:690px; top:70px; width:420px; }
+  .f1 figcaption { position:absolute; top:-24px; margin:0; }
+  .f2 { left:858px; top:206px; width:380px; box-shadow:0 0 0 10px var(--bg); }
+</style>
+<script>if (location.search.includes("light")) document.documentElement.classList.add("light");</script>
+</head>
+<body>
+  <div class="kicker">KEPU-STUDIO · A CLAUDE CODE PLUGIN</div>
+  <h1>科普番剧工坊</h1>
+  <div class="rule"></div>
+  <div class="tag">动漫 / 动画 / 游戏风中文科普视频的一条龙工作流</div>
+  <div class="sub"><b>多音字</b>合成前定死 · <b>希腊字母</b>按英文念 · taste 定<b>画风</b><br>讲义 · 逐字稿 · 分级 · 耳检 · 四道关卡 · 复盘</div>
+  <div class="series">合并自 <i>《ETH 之墙》</i> 与 <i>《地基之下》</i> 两部作品的实战</div>
+  <figure class="f1"><img src="frame_eva.jpg" alt=""><figcaption><b>EVA 标题卡</b>ManimGL · 《ETH 之墙》</figcaption></figure>
+  <figure class="f2"><img src="frame_pixel.jpg" alt=""><figcaption><b>像素 RPG</b>Pillow + numpy · 《地基之下》</figcaption></figure>
+</body>
+</html>

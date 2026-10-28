@@ -4,6 +4,7 @@
 name = "{{NAME}}"
 engine = "{{ENGINE}}"              # anime（ManimGL 动漫标题卡风）| pixel（像素 RPG）| none（自己的渲染器）
 scripts = "script/episodes"        # 每期稿子
+storyboards = "script/storyboards" # 每期分镜（同名）：kepu board 查节奏预算
 audio = "{{AUDIO}}"                # 配音输出：<audio>/<期>/beats.json
 series = "series/系列设定.md"
 notes = "notes"
@@ -37,6 +38,17 @@ question_every_min = 3.0           # 每隔几分钟给观众一个问题
 max_sentence_chars = 25            # 念出来的中文要短句
 max_beat_seconds = 45
 
+[board]                            # 分镜的节奏预算（kepu board / gate 的 picture 阶段），和系列设定里写的一致
+big_max = 8                        # 大字卡
+insert_max = 6                     # 插卡
+judge_max = 3                      # 签名动作【判】
+push_max = 2                       # 镜头推拉
+white_min = 1                      # 白底（换气）段落
+white_max = 2
+gap_seconds = 20                   # 两次大字卡 / 插卡之间至少隔几秒
+cold_open_seconds = 180            # 冷开场里不查间隔
+
 [release]
-lufs = -16.0
-true_peak = -1.5
+lufs = -16.0                       # 成片响度（B 站、YouTube 都在 −14 到 −16 之间；kepu loudness --fix 一键校正）
+true_peak = -1.5                   # 真峰值上限（dBTP）
+lufs_tolerance = 1.0

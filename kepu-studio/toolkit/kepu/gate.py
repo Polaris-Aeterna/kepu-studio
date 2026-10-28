@@ -6,8 +6,8 @@
 
   script   格式对、没有拦下的多音字和读法问题                 kepu lint
   voice    每个 beat 都有配音；配音是“当前稿子”合成的（稿子改了、录音没重做会被抓出来）；耳检做过、没有未处理的“错”
-  picture  引擎的检查（ManimGL 渲染日志没有超时 / 节奏警告；像素引擎的遮挡、出框、空白检查）
-  release  成片比配音和稿子新；字幕没有花括号；逐字稿、分段、讲义、封面都在
+  picture  分镜的节奏预算（kepu board）；引擎的检查（ManimGL 渲染日志没有超时 / 节奏警告；像素引擎的遮挡、出框、空白检查）
+  release  成片比配音和稿子新；响度达标（−16 LUFS）；字幕没有花括号；逐字稿、分段、讲义、封面都在
 状态看文件（修改时间、缓存键、大小），不看“我记得做过”。
 """
 from __future__ import annotations
@@ -18,6 +18,7 @@ from pathlib import Path
 
 from . import script as S
 from .lint import lint
+from .util import pad, width
 from .voice import chapter_id, prep_beat
 
 OK, BAD, SKIP, WARN = "✓", "✗", "–", "!"
@@ -69,6 +70,15 @@ def check(script: Path, cfg, stages=None, final=False) -> int:
         else:
             _row(rows, "voice", "耳检", BAD if final else WARN, f"还没做：kepu earcheck build {script}")
     if "picture" in stages:
+        from .board import storyboard_for
+        sb = storyboard_for(script, cfg)
+        if sb.exists():
+            from .board import check as board_check
+            nbad, brows = board_check(sb, cfg, script, quiet=True)
+            worst = [f"{w}{('：' + d) if d else ''}" for s_, w, d in brows if s_ == BAD]
+            _row(rows, "picture", "分镜节奏预算（kepu board）", BAD if nbad else OK, "；".join(worst)[:90])
+        else:
+            _row(rows, "picture", "分镜节奏预算（kepu board）", WARN, f"没有 {sb.name}（分镜写在 {sb.parent.name}/）")
         eng = cfg.get("project", "engine")
         logs = list((cfg.root or Path(".")).glob(f"episodes/{chapter}*/**/*.log")) if eng == "anime" else []
         if eng == "anime":
@@ -84,11 +94,18 @@ def check(script: Path, cfg, stages=None, final=False) -> int:
     if "release" in stages:
         vids = sorted(out.glob("*.mp4"), key=lambda p: p.stat().st_mtime) if out.exists() else []
         if not vids:
-            _row(rows, "release", "成片", BAD if final else WARN, f"{out} 里还没有 mp4")
+            _row(rows, "release", "成片", BAD if final else WARN,
+                 f"{out.relative_to(cfg.root) if cfg.root and cfg.root in out.parents else out} 里还没有 mp4")
         else:
             v = vids[-1]
             newer = all(v.stat().st_mtime >= p.stat().st_mtime for p in (bj, script) if p.exists())
             _row(rows, "release", f"成片比配音和稿子新（{v.name}）", OK if newer else BAD, "" if newer else "重渲染 / 重拼")
+            try:
+                from .loudness import measure, verdict
+                ok, msg = verdict(measure(v, float(cfg.get("release", "lufs")), float(cfg.get("release", "true_peak"))), cfg)
+                _row(rows, "release", "响度", OK if ok else BAD, msg + ("" if ok else f"；校正：kepu loudness {v} --fix"))
+            except Exception as e:  # noqa: BLE001
+                _row(rows, "release", "响度", WARN, f"测不了：{e}")
         srts = list(out.glob("*.srt")) if out.exists() else []
         if srts:
             bad = [p.name for p in srts if "{" in p.read_text(encoding="utf-8", errors="ignore")]
@@ -96,14 +113,14 @@ def check(script: Path, cfg, stages=None, final=False) -> int:
         for f, what in (("transcript.md", "逐字稿"), ("chapters.txt", "B 站分段"), ("notes.pdf", "讲义 PDF"),
                         ("cover_16x9.png", "封面 16:9"), ("cover_4x3.png", "封面 4:3"), ("publish.md", "投稿文案")):
             _row(rows, "release", what, OK if (out / f).exists() else WARN, "" if (out / f).exists() else f"没有 {f}")
-    w = max(len(r[1]) for r in rows) if rows else 10
+    w = min(30, max(width(r[1]) for r in rows)) if rows else 10
     print(f"关卡 · {chapter}")
     cur = None
     for stage, what, st, detail in rows:
         if stage != cur:
             print(f"  [{stage}]")
             cur = stage
-        print(f"    {st} {what}{' ' * max(1, w - len(what) + 2)}{detail}")
+        print(f"    {st} {pad(what, w + 2)}{detail}")
     bad = sum(1 for r in rows if r[2] == BAD)
     print(f"  {'通过' if not bad else f'{bad} 项没过'}" + ("（! 是提醒，发布前用 --final 会变成 ✗）" if any(r[2] == WARN for r in rows) else ""))
     return 1 if bad else 0

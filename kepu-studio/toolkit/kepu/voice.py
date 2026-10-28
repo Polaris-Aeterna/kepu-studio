@@ -209,6 +209,44 @@ def take(tts: str, engine: str, st: dict, cache_dir: Path, cfg):
     return mp3, times, False
 
 
+LEDGER_HEAD = "# kepu 的花钱记录：每一条付过钱的合成一行（kepu voice / greek audition 自动写，缓存命中不记）\n" \
+              "date\tchapter\tbeat\tchars\tengine\tvoice\tmodel\n"
+
+
+def ledger_add(cfg, chapter: str, beat: str, chars: int, engine: str, st: dict):
+    """Append one paid synthesis to <review>/cost.tsv (written per take, so a crash never loses the record)."""
+    if engine != "eleven" or cfg.root is None:
+        return
+    p = cfg.path("project", "review") / "cost.tsv"
+    p.parent.mkdir(parents=True, exist_ok=True)
+    new = not p.exists()
+    with p.open("a", encoding="utf-8") as f:
+        if new:
+            f.write(LEDGER_HEAD)
+        f.write(f"{time.strftime('%Y-%m-%d %H:%M')}\t{chapter}\t{beat}\t{chars}\t{engine}\t{st.get('voice', '')}\t"
+                f"{st.get('model', '')}\n")
+
+
+def ledger(cfg) -> list[dict]:
+    p = cfg.path("project", "review") / "cost.tsv" if cfg.root else None
+    if not p or not p.exists():
+        return []
+    rows = [ln.split("\t") for ln in p.read_text(encoding="utf-8").splitlines() if ln and not ln.startswith("#")]
+    head, body = rows[0], rows[1:]
+    return [dict(zip(head, r)) | {"chars": int(r[3])} for r in body if len(r) >= 4 and r[3].isdigit()]
+
+
+def ledger_summary(cfg) -> str:
+    rows = ledger(cfg)
+    if not rows:
+        return ""
+    by: dict[str, int] = {}
+    for r in rows:
+        by[r["chapter"]] = by.get(r["chapter"], 0) + r["chars"]
+    return (f"本项目记账 {len(rows)} 条合成、共 {sum(by.values()):,} 字符：" +
+            "，".join(f"{k} {v:,}" for k, v in by.items()) + f"（最近 {rows[-1]['date']}）")
+
+
 def to_wav(src: Path, dst: Path) -> Path:
     subprocess.run(["ffmpeg", "-v", "error", "-y", "-i", str(src), "-ac", "1", "-ar", str(SAMPLE_RATE), "-sample_fmt", "s16",
                     str(dst)], check=True)
@@ -340,6 +378,8 @@ def run(script: Path, cfg, *, dry=False, only=None, engine=None, max_chars=None,
     order = [b.id for b in ep.beats]
     for b, bp, _ in plan:
         mp3, times, hit = take(bp.tts, engine, st, cache_dir, cfg)
+        if not hit:
+            ledger_add(cfg, chapter, b.id, len(bp.tts), engine, st)
         wav = to_wav(mp3, out_dir / f"beat{b.id}.wav")
         dur = wav_duration(wav)
         disp, words = beat_timing(bp, times, wav, dur)
@@ -376,6 +416,8 @@ def run(script: Path, cfg, *, dry=False, only=None, engine=None, max_chars=None,
 def main_quota(cfg) -> int:
     q = quota(cfg)
     print(f"[voice] ElevenLabs {q['tier']}：已用 {q['used']:,} / {q['limit']:,}，剩余 {q['remaining']:,}（{q['reset']} 重置）")
+    if ledger_summary(cfg):
+        print(f"[voice] {ledger_summary(cfg)}")
     return 0
 
 

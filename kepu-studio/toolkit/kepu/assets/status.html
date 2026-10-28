@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__NAME__ · 系列进度</title>
+<style>
+  :root { --bg:#0A0A0A; --surface:#171717; --ink:#ECEAE4; --ink2:#8D8A84; --dim:#3C3B39; --red:#D8361F; --line:#262626; }
+  @media (prefers-color-scheme: light) { :root { --bg:#E9E6DE; --surface:#F3F1EB; --ink:#0A0A0A; --ink2:#5E5B55; --dim:#B9B5AC; --red:#C42E19; --line:#D3CFC5; } }
+  * { box-sizing:border-box; }
+  body { margin:0; background:var(--bg); color:var(--ink); font:15px/1.5 "Songti SC", "Noto Serif SC", "Source Han Serif SC", serif; }
+  .wrap { max-width:1180px; margin:0 auto; padding:48px 24px 64px; }
+  .kicker { font:600 12px/1 Baskerville, "Times New Roman", serif; letter-spacing:.32em; color:var(--ink2); text-transform:uppercase; }
+  h1 { font-weight:900; font-size:clamp(40px, 7vw, 76px); line-height:1; margin:14px 0 10px; transform:scaleX(.8); transform-origin:left; letter-spacing:.02em; }
+  .meta { color:var(--ink2); font-size:14px; }
+  .rule { height:3px; background:var(--ink); margin:22px 0 0; position:relative; }
+  .rule::after { content:""; position:absolute; left:0; top:0; height:3px; width:64px; background:var(--red); }
+  .scroll { overflow-x:auto; }
+  table { border-collapse:collapse; width:100%; margin-top:8px; min-width:860px; }
+  thead th { font:600 12px/1 Baskerville, "Times New Roman", "Songti SC", serif; letter-spacing:.12em; color:var(--ink2); text-align:left; padding:16px 10px 12px; border-bottom:1px solid var(--line); }
+  tbody tr { border-bottom:1px solid var(--line); }
+  tbody th { text-align:left; padding:14px 10px; font-weight:400; white-space:nowrap; }
+  .ep { display:inline-block; min-width:54px; font:600 13px/1 Baskerville, "Times New Roman", serif; letter-spacing:.08em; color:var(--ink2); }
+  .tt { font-weight:700; font-size:16px; }
+  td { padding:14px 10px; vertical-align:middle; white-space:nowrap; }
+  td.num { font:15px Baskerville, "Times New Roman", serif; color:var(--ink2); }
+  .dot { display:inline-block; width:11px; height:11px; border-radius:50%; margin-right:7px; vertical-align:-1px; }
+  .done .dot { background:var(--ink); }
+  .todo .dot { border:1.5px solid var(--dim); }
+  .none .dot { width:11px; height:1.5px; border-radius:0; background:var(--dim); vertical-align:3px; }
+  .bad .dot { background:var(--red); border-radius:1px; transform:rotate(45deg); }
+  .txt { font-size:13px; color:var(--ink2); }
+  .bad .txt { color:var(--red); font-weight:700; }
+  td.next { width:30%; }
+  .meter { height:3px; background:var(--dim); margin-bottom:8px; }
+  .meter i { display:block; height:3px; background:var(--ink); }
+  code { font:12.5px/1.4 ui-monospace, "SF Mono", Menlo, monospace; color:var(--ink2); white-space:normal; }
+  .legend { margin-top:20px; color:var(--ink2); font-size:13px; display:flex; gap:22px; flex-wrap:wrap; }
+  .legend span { display:inline-flex; align-items:center; }
+  .legend .done, .legend .todo, .legend .bad { display:inline-flex; align-items:center; }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="kicker">kepu-studio · series status</div>
+  <h1>__NAME__</h1>
+  <div class="meta">__META__</div>
+  <div class="rule"></div>
+  <div class="scroll">
+  <table>
+    <thead><tr><th>期</th><th>分钟</th>__HEADS__<th>下一步</th></tr></thead>
+    <tbody>
+__ROWS__
+    </tbody>
+  </table>
+  </div>
+  <div class="legend">
+    <span class="done"><span class="dot"></span>完成</span>
+    <span class="todo"><span class="dot"></span>还没做</span>
+    <span class="bad"><span class="dot"></span>有问题</span>
+    <span>≈ 按字数估的时长；没有 ≈ 的是配音的真实时长</span>
+  </div>
+</div>
+</body>
+</html>
