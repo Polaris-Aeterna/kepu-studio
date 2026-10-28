@@ -662,7 +662,7 @@ class Promo_04_Close(Promo):
         self.sfx("key", -12)
         self.wait_until_beat("做你的")
         mk = block(1.9, 0.1, RED).next_to(en, DOWN, buff=0.32).align_to(title, LEFT)
-        url = Latin("github.com/Polaris-Aeterna/kepu-studio      v0.2.0", 30, INK_2).next_to(box, DOWN, buff=0.3).align_to(box, LEFT)
+        url = Latin("github.com/Polaris-Aeterna/kepu-studio", 30, INK_2).next_to(box, DOWN, buff=0.3).align_to(box, LEFT)
         self.play(mark_anim(mk), FadeIn(url), run_time=0.4)
         self.beat_wait()
         self.set_subtitles(False)

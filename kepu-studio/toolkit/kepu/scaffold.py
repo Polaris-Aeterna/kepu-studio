@@ -93,6 +93,8 @@ def init(target: Path, engine: str = "anime", name: str | None = None, upgrade: 
         if src.exists():
             shutil.copytree(src, target / engine_dir, dirs_exist_ok=True,
                             ignore=shutil.ignore_patterns("__pycache__", "*.pyc"))
+            for sh in (target / engine_dir).rglob("*.sh"):      # unzipping by double-click drops the executable bit
+                os.chmod(sh, 0o755)
             print(f"[init] 渲染引擎模板 {tmpl} → {engine_dir}/（说明在 {engine_dir}/README.md）")
         else:
             print(f"[init] 没找到引擎模板 {src}：从插件目录运行 init，或者手动复制 templates/{tmpl}")

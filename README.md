@@ -7,7 +7,7 @@
 
 <br><br>
 
-![version](https://img.shields.io/badge/version-0.2.0-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![tests](https://img.shields.io/badge/tests-25_passing-2f7d4f?style=flat-square)
+![version](https://img.shields.io/badge/version-0.2.1-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![tests](https://img.shields.io/badge/tests-25_passing-2f7d4f?style=flat-square)
 
 [宣传片](#宣传片) · [它解决什么](#它解决什么) · [工作流](#工作流) · [读音引擎](#读音引擎) · [希腊字母](#希腊字母) · [耳检包](#耳检包) · [美术方向](#美术方向) · [两套引擎](#两套引擎) · [讲义与分级](#讲义与分级) · [0.2 新增](#02-新增) · [安装](#安装) · [命令](#命令)
 
@@ -39,7 +39,7 @@
 ## 宣传片
 
 <p align="center">
-  <a href="https://github.com/Polaris-Aeterna/kepu-studio/releases/download/v0.2.0/kepu-studio_promo.mp4"><img src="docs/images/teaser.gif" alt="宣传片片段：配音把“长子句”念成 zhǎng；片名卡；读音引擎把“长”定成 cháng，发给模型的是“尝子句”" width="82%"></a>
+  <a href="https://github.com/Polaris-Aeterna/kepu-studio/releases/download/v0.2.1/kepu-studio_promo.mp4"><img src="docs/images/teaser.gif" alt="宣传片片段：配音把“长子句”念成 zhǎng；片名卡；读音引擎把“长”定成 cháng，发给模型的是“尝子句”" width="82%"></a>
   <br>
   <sub>▶ 点图看完整宣传片（1 分 45 秒 · 1080p · 有声）。稿子、读音、配音、画面全部是 kepu-studio 自己做的，源码在 <a href="examples/promo"><code>examples/promo</code></a>。</sub>
 </p>
@@ -293,6 +293,7 @@ cd 我的系列
 ├── CHANGELOG.md
 ├── docs/images/                        # README 用图；docs/src/ 是横幅和流程图的源文件（render.sh 重出）
 ├── examples/promo/                     # 宣传片的稿子、分镜、场景代码、音效合成
+├── tools/build_release.py              # 从 git 标签打两个发布用的 zip
 └── kepu-studio/                        # 插件本体
     ├── .claude-plugin/plugin.json
     ├── skills/      studio new art script pronounce voice notes review publish fix retro
