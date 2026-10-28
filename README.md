@@ -196,11 +196,11 @@ $ ./kepu lint script/episodes/ep01.md
 **Claude Code（推荐）**。需要你的 git 能访问这个私有仓库：
 
 ```bash
-claude plugin marketplace add xiaoyulics/kepu-studio
+claude plugin marketplace add Polaris-Aeterna/kepu-studio
 claude plugin install kepu-studio@kepu-studio-market
 ```
 
-**从压缩包安装**。在 [Releases](https://github.com/xiaoyulics/kepu-studio/releases) 下载 `kepu-studio.zip`，解压，然后：
+**从压缩包安装**。在 [Releases](https://github.com/Polaris-Aeterna/kepu-studio/releases) 下载 `kepu-studio.zip`，解压，然后：
 
 ```bash
 claude plugin marketplace add ./kepu-studio
