@@ -163,8 +163,6 @@ $ ./kepu lint script/episodes/ep01.md
 
 ## 讲义 · 逐字稿 · 分级
 
-<img src="docs/images/handout.png" alt="讲义 PDF 的一页：本期地图、进阶框、硬核支线框、严谨度徽章" width="62%" align="right">
-
 - **讲义先写，稿子后写**：屏幕上的定理从讲义里复制。
 - `kepu notes build` 生成可打印的 HTML 和 PDF，公式由 KaTeX 渲染。
 - 讲义里的元素：
@@ -181,7 +179,7 @@ $ ./kepu lint script/episodes/ep01.md
 - `--cut L1` 输出只保留主线的精简版清单。
 - `kepu transcript` 从同一份稿子生成逐字稿、B 站分段、.srt，三者天然一致。
 
-<br clear="right">
+<p align="center"><img src="docs/images/handout.png" alt="讲义 PDF 的一页：本期地图、进阶框、硬核支线框、严谨度徽章" width="70%"></p>
 
 ## 元认知：让流程自己发现自己的错
 
@@ -204,7 +202,7 @@ claude plugin marketplace add xiaoyulics/kepu-studio
 claude plugin install kepu-studio@kepu-studio-market
 ```
 
-**从压缩包安装**。在 [Releases](../../releases) 下载 `kepu-studio.zip`，解压，然后：
+**从压缩包安装**。在 [Releases](https://github.com/xiaoyulics/kepu-studio/releases) 下载 `kepu-studio.zip`，解压，然后：
 
 ```bash
 claude plugin marketplace add ./kepu-studio
