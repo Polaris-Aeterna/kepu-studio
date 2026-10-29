@@ -7,7 +7,7 @@
 
 <br><br>
 
-![version](https://img.shields.io/badge/version-0.2.1-1d1c1a?style=flat-square) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![tests](https://img.shields.io/badge/tests-25_passing-2f7d4f?style=flat-square)
+![version](https://img.shields.io/badge/version-0.2.1-1d1c1a?style=flat-square) [![license](https://img.shields.io/badge/license-MIT-1d1c1a?style=flat-square)](LICENSE) ![Claude Code plugin](https://img.shields.io/badge/Claude_Code-plugin-D97757?style=flat-square) ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?style=flat-square&logo=python&logoColor=white) ![stdlib only](https://img.shields.io/badge/toolkit-stdlib_only-2f7d4f?style=flat-square) ![tests](https://img.shields.io/badge/tests-25_passing-2f7d4f?style=flat-square)
 
 [宣传片](#宣传片) · [它解决什么](#它解决什么) · [工作流](#工作流) · [美术方向](#美术方向) · [读音引擎](#读音引擎) · [希腊字母](#希腊字母) · [耳检包](#耳检包) · [两套引擎](#两套引擎) · [讲义与分级](#讲义与分级) · [0.2 新增](#02-新增) · [安装](#安装) · [命令](#命令)
 
@@ -238,9 +238,7 @@ kepu-studio 宣传片 · 1 期 · 引擎 anime · 已花 450 字符
 
 ## 安装
 
-> 这是**私有仓库**。请作者在 Settings → Collaborators 里把你的 GitHub 账号加进来。
-
-**Claude Code（推荐）**，需要你的 git 能访问这个仓库：
+**Claude Code（推荐）**：
 
 ```bash
 claude plugin marketplace add Polaris-Aeterna/kepu-studio
@@ -291,7 +289,8 @@ cd 我的系列
 .
 ├── .claude-plugin/marketplace.json     # 插件市场（kepu-studio-market）
 ├── CHANGELOG.md
-├── docs/images/                        # README 用图；docs/src/ 是横幅和流程图的源文件（render.sh 重出）
+├── LICENSE                             # MIT（代码和文档；docs/ 里的图片除外）
+├── docs/images/                        # README 用图，保留权利（见 docs/README.md）；docs/src/ 是横幅和流程图的源文件
 ├── examples/promo/                     # 宣传片的稿子、分镜、场景代码、音效合成
 ├── tools/build_release.py              # 从 git 标签打两个发布用的 zip
 └── kepu-studio/                        # 插件本体
@@ -305,6 +304,8 @@ cd 我的系列
 
 ## 许可与来源
 
-- 读音词表由 jieba 和 pypinyin 的词典生成，两者都是 MIT 许可，见 [`THIRD_PARTY.md`](kepu-studio/toolkit/kepu/data/THIRD_PARTY.md)。
-- taste-skill 本身没有打包进来（它的分发许可没有写明）。插件附带了它迁移到视频上的浓缩版；本机装了 taste-skill 的话，art 技能会自动读原文。
-- 两套引擎、整套流程、宣传片里的画面和配音，都来自作者自己的两部作品。音效和底乐用 numpy 合成，没有采样。
+- **代码和文档**：插件、kepu 工具、两套引擎模板、技能说明、例子，都是 [MIT](LICENSE)。
+- **素材保留所有权利**：`docs/` 里的图片和 Releases 里的宣传片，内容来自《ETH 之墙》《地基之下》的成片画面和配音，不适用 MIT，见 [`docs/README.md`](docs/README.md)。
+- **第三方**：读音词表由 jieba 和 pypinyin 的词典生成，两者都是 MIT 许可，见 [`THIRD_PARTY.md`](kepu-studio/toolkit/kepu/data/THIRD_PARTY.md)。
+- **taste-skill** 本身没有打包进来（它的分发许可没有写明）。插件附带的是《ETH 之墙》把它迁移到视频上的结论，注明了出处；本机装了 taste-skill 的话，art 技能会自动读原文。
+- 方向库只借游戏和动画的构图、色彩和动作语法，不含任何原作的角色、logo、字体或素材。音效和底乐用 numpy 合成，没有采样。

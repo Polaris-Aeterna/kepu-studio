@@ -47,6 +47,8 @@ ffmpeg -i output/promo/promo_raw.mp4 -i assets/sfx/bed.wav -filter_complex \
 
 换成你自己系列的帧，改 `promo.py` 里的文件名就能重做一支。
 
+这些素材和宣传片成片保留所有权利，不适用仓库的 MIT 许可（见 [`docs/README.md`](../../docs/README.md)）；这个目录里的代码是 MIT。
+
 ## 做这支片子时顺手修掉的问题
 
 宣传片也是一次完整的“吃自己的狗粮”。它撞出了三个问题，都已经修进 v0.2.0：

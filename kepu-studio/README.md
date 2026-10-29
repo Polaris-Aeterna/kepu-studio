@@ -76,6 +76,7 @@ templates/     两套渲染引擎：engine-anime（ManimGL 动漫标题卡，来
 
 ## 来源与许可
 
+- 代码许可：MIT，见 `LICENSE`。
 - 读音词表由 jieba 和 pypinyin 的词典生成（MIT）。见 `toolkit/kepu/data/THIRD_PARTY.md`。
 - 两套引擎与工作流来自作者自己的两部作品。
 - 引擎改编时致敬了一些游戏和动画的画风语法，但没有使用任何原作的角色、logo、字体或素材。

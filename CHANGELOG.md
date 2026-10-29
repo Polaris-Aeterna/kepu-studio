@@ -1,5 +1,9 @@
 # 更新记录
 
+## 未发布
+
+- 开源准备：代码和文档采用 MIT 许可（`LICENSE`，插件目录里也放了一份；`plugin.json` 加了 license、homepage、repository）；`docs/` 里的图片和宣传片保留所有权利（`docs/README.md`）。README 去掉了私有仓库的说明。
+
 ## 0.2.1 · 2026-10-29
 
 - `kepu init` 复制渲染引擎时补上脚本的可执行权限：双击解压 zip 会丢掉它，`engine/render.sh` 就跑不起来。
