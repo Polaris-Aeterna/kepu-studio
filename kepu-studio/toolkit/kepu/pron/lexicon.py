@@ -53,6 +53,10 @@ def parse_entry(spec: str, action: str = "force", note: str = "", layer: str = "
     if action not in ACTIONS:
         raise ValueError(f"动作必须是 {'/'.join(ACTIONS)}：{action}")
     for k, r in marks.items():
+        if r == "?":                 # 分〔?〕量 is how a hold entry is written back (add_entry, find)
+            if action != "hold":
+                raise ValueError(f"“{clean[k]}〔?〕”只能用在 hold 词条里")
+            continue
         rs = readings_of(clean[k])
         if rs and r not in rs:
             raise ValueError(f"“{clean[k]}”没有读音 {r}（可选：{'、'.join(rs)}）")

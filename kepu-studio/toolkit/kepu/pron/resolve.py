@@ -2,7 +2,8 @@
 
 决定的来源，从强到弱：
     mark     稿子里的读音标记 字〔读音〕（作者的决定，什么都盖不过它）
-    lexicon  三层读音词典（项目 > 个人 > 内置），最长匹配；词条同时修正通用词典（背〔bèi〕包）
+    lexicon  三层读音词典（项目 > 个人 > 内置），最长匹配；词条同时修正通用词典（背〔bèi〕包）；
+             词条标的字不必在多音字清单里（扎〔zhā〕堆、球冠〔guān〕）
     rule     上下文规则（rules.py）；规则给的读音和通用词典打架 → 拦下
     dict     通用词典（pypinyin 词组库）**只能放行、不能强制**：它给默认读音、且没有分词歧义 → 不改文字。
              它给非默认读音：A 级字拦下；B 级字交给模型并列出（status = auto）；C 级字（助词、极常用字）直接交给模型。
@@ -133,12 +134,13 @@ def dict_view(text: str, i: int, cov: dict, default: str, lex: Lexicon) -> DictV
 
 def resolve(text: str, marks: dict[int, str], lex: Lexicon, *, strict: bool = False, margin: float = 3.0,
             bad_standins: frozenset = frozenset()) -> list[Spot]:
-    """Decide every inventory polyphone (and every marked character) in `text` (marks already removed)."""
+    """Decide every inventory polyphone, every marked character and every character a lexicon entry marks
+    (扎〔zhā〕堆 works although 扎 is not in the inventory) in `text` (marks already removed)."""
     poly = polyphones()
-    targets = [i for i, c in enumerate(text) if c in poly or i in marks]
+    lexcov = lex.covering(text)
+    targets = [i for i, c in enumerate(text) if c in poly or i in marks or i in lexcov]
     if not targets:
         return []
-    lexcov = lex.covering(text)
     lat = cov = None
     hang = hang_positions(text) if "行" in text else set()
     spots = []
@@ -175,7 +177,7 @@ def resolve(text: str, marks: dict[int, str], lex: Lexicon, *, strict: bool = Fa
             elif h.action == "hold":
                 sp.status, sp.action = "hold", "hold"
                 sp.why = f"同形词“{h.entry.clean}”：{h.entry.note or '读音取决于意思'}，请在稿子里标读音"
-                sp.suggest = [r for r in readings_of(ch) if r] or [default]
+                sp.suggest = [r for r in readings_of(ch) if r] or [r for r in (h.reading, default) if r and r != "?"]
             else:
                 sp.reading, sp.source, sp.action = h.reading, "lexicon", h.action
                 if h.action == "leave" and _single_reading(text, i, hang, "") == h.reading and rule_at(text, i):
@@ -190,7 +192,8 @@ def resolve(text: str, marks: dict[int, str], lex: Lexicon, *, strict: bool = Fa
                         if is_single:          # the character on its own: its reading comes from the context rules
                             r2 = _single_reading(text, i, hang, default)
                         # a competing reading vetoes the entry only if its segmentation is at least as plausible
-                        if r2 != h.reading and not (a <= s2 and e2 <= b) and sc2 >= own - 0.01:
+                        # ('' = a character outside the inventory on its own: no known reading to compete with)
+                        if r2 and r2 != h.reading and not (a <= s2 and e2 <= b) and sc2 >= own - 0.01:
                             trap = (f"分词陷阱：词条“{h.entry.clean}”说 {h.reading}，"
                                     f"但切成“{text[s2:e2]}”时念 {r2}")
                             sp.span = (min(a, s2), max(b, e2))
@@ -203,6 +206,8 @@ def resolve(text: str, marks: dict[int, str], lex: Lexicon, *, strict: bool = Fa
                         a, b = h.start, h.start + len(h.entry.clean)
                         sp.span = (min(a, k if k >= 0 else a), max(b, (k + len(dv.word)) if k >= 0 else b))
                     sp.suggest = list(dict.fromkeys([h.reading] + [r for _, r in dv.alts] + [dv.reading]))
+        elif P is None:
+            continue        # outside the inventory, and no entry applies here (球冠〔guān〕 inside 足球冠军)
         else:
             if ch == "行":
                 rule = ("háng" if i in hang else "xíng", "“行”的规则：" + ("表格的行" if i in hang else "其余念 xíng"), "")
@@ -247,7 +252,8 @@ def resolve(text: str, marks: dict[int, str], lex: Lexicon, *, strict: bool = Fa
         # force_default characters (行 长 调): a decided default reading is still forced
         if sp.action == "leave" and P and P.force_default and sp.reading and sp.status == "ok":
             sp.action = "force"
-        _finish(sp, strict, bad_standins, default)
+        # only inventory characters have a default the model is known to say; elsewhere a forced reading is always sent
+        _finish(sp, strict, bad_standins, P.default if P else "")
         spots.append(sp)
     return spots
 

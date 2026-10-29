@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 from . import script as S
-from .pron.speak import describe, prepare
+from .pron.speak import describe, lexicon_for, prepare, reload_lexicon
 from .util import pad
 from .voice import prep_beat, suggestion
 
@@ -78,6 +78,8 @@ def _spot_json(text, s):
 def pron_debug(texts: list[str], cfg) -> int:
     pcfg = cfg.pron()
     rc = 0
+    for err in lexicon_for(pcfg).errors:
+        print(f"✗ 词典   {err}（这一条没有生效）")
     for t in texts:
         d, spoken, _ = S.split_beat(t)
         p = prepare(spoken, pcfg)
@@ -92,4 +94,37 @@ def pron_debug(texts: list[str], cfg) -> int:
             rc = 1
         for n in p.notes:
             print(f"  ? {n}")
+    return rc
+
+
+def lexicon_check(e, cfg) -> int:
+    """After `kepu lexicon add`: run the entry's own word through the engine and say what goes to the model.
+    Exit 1 when a marked character is not decided by the entry, i.e. the entry would do nothing."""
+    reload_lexicon()
+    pcfg = cfg.pron()
+    p = prepare(e.clean, pcfg)
+    print(f"  试念：{p.clean} → 发给模型：{p.tts}")
+    rc = 0
+    for k, r in sorted(e.readings.items()):
+        ch = e.clean[k]
+        s = next((s for s in p.spots if s.i == k), None)
+        if s is None:
+            print(f"  ⚠ {ch}〔{r}〕没有生效：引擎没有处理这个字")
+            rc = 1
+            continue
+        print("  " + describe(s))
+        if e.action == "hold" or s.open:
+            if not s.open:
+                print(f"  ⚠ {ch}〔{r}〕没有生效：这里没有拦下（定的是 {s.reading}，{s.entry or s.why or s.source}）")
+                rc = 1
+            continue                    # a hold entry stops here by design, and so does strict mode without a stand-in
+        if s.source != "lexicon" or s.reading != r:
+            print(f"  ⚠ {ch}〔{r}〕在这里没有生效：定的是 {s.reading}（{s.entry or s.why or s.source}）")
+            rc = 1
+        elif e.action == "force" and s.action != "force":
+            print(f"    {r} 是“{ch}”的默认读音、没有替身字：不改文字，交给模型")
+        elif s.status == "pinyin":
+            print(f"    {r} 没有替身字：送带调号的拼音，合成后进耳检包")
+    for err in lexicon_for(pcfg).errors:
+        print(f"  ✗ 词典   {err}（这一条没有生效）")
     return rc

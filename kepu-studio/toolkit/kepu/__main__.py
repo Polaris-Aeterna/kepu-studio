@@ -126,7 +126,8 @@ def main(argv=None) -> int:
                 ap.error("lexicon add 需要一个词条，例如 \"长〔cháng〕子句\"")
             e, path = add_entry(a.arg, a.action, a.note, a.scope, cfg.root)
             print(f"[lexicon] {e.spec}\t{e.action}\t{e.note} → {path}")
-            return 0
+            from .lint import lexicon_check
+            return lexicon_check(e, cfg)
         lex = Lexicon(cfg.root)
         if a.op == "find":
             for e in sorted(lex.find(a.arg or ""), key=lambda e: e.clean):

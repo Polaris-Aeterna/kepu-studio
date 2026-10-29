@@ -2,14 +2,22 @@
 
     python3 -m unittest discover -s toolkit/tests        # 或者 python3 -m kepu selftest
 """
+import io
 import sys
+import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
+from kepu import config, lint  # noqa: E402
 from kepu import script as S  # noqa: E402
-from kepu.pron.speak import PronConfig, prepare  # noqa: E402
+from kepu.pron import lexicon  # noqa: E402
+from kepu.pron.inventory import stand_in  # noqa: E402
+from kepu.pron.lexicon import Lexicon, add_entry, parse_entry  # noqa: E402
+from kepu.pron.speak import PronConfig, prepare, reload_lexicon  # noqa: E402
 
 CFG = PronConfig()
 
@@ -143,6 +151,94 @@ class Spoken(unittest.TestCase):
         self.assertEqual(len(p.spans), len(p.clean))
         for ch, a, b in p.spans:
             self.assertLessEqual(a, b)
+
+
+def capture(fn, *args):
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = fn(*args)
+    return buf.getvalue(), rc
+
+
+class ProjectLexicon(unittest.TestCase):
+    """项目词典 pron/lexicon.tsv 里的词条：写进去就要生效，不生效就要说出来。"""
+
+    LEX = ("扎〔zhā〕堆\tforce\n球冠〔guān〕\tforce\n舍〔shě〕林\tforce\n什〔shí〕梅尔金\tforce\n"
+           "雪茄〔jiā〕\tforce\n绑扎〔zā〕\tleave\n")
+
+    def setUp(self):
+        self.tmp = tempfile.TemporaryDirectory()
+        self.root = Path(self.tmp.name)
+        (self.root / "pron").mkdir()
+        (self.root / "pron" / "lexicon.tsv").write_text(self.LEX, encoding="utf-8")
+        (self.root / "kepu.toml").write_text('[voice]\nvoice_id = "test"\n', encoding="utf-8")
+        self.cfg = PronConfig(project_root=self.root)
+        reload_lexicon()
+
+    def tearDown(self):
+        reload_lexicon()
+        self.tmp.cleanup()
+
+    def spot(self, text, ch, cfg=None):
+        p = prepare(text, cfg or self.cfg)
+        return next((s for s in p.spots if s.char == ch), None), p
+
+    # 《挂谷猜想》2026-10-30：词条 扎〔zhā〕堆、球冠〔guān〕 写进去了，却一个字也没改（扎、冠 不在多音字清单里）
+    def test_force_outside_inventory(self):
+        p = prepare("管子扎堆。在球冠上。舍林和什梅尔金。", self.cfg)
+        self.assertEqual(p.tts, "管子zhā堆。在球guān上。shě林和shí梅尔金。")
+        got = {s.char: (s.reading, s.source, s.status) for s in p.spots if s.char in "扎冠舍什"}
+        self.assertEqual(got, {"扎": ("zhā", "lexicon", "pinyin"), "冠": ("guān", "lexicon", "pinyin"),
+                               "舍": ("shě", "lexicon", "pinyin"), "什": ("shí", "lexicon", "pinyin")})
+        self.assertEqual(sum(r["kind"] == "pinyin" for r in p.records), 4)     # 送拼音的都进耳检包
+
+    def test_standin_outside_inventory(self):
+        self.assertEqual(prepare("点一根雪茄", self.cfg).tts, "点一根雪" + stand_in("jiā")[0])
+
+    def test_entry_must_fit_the_segmentation(self):
+        s, p = self.spot("他拿过足球冠军", "冠")               # 足球 + 冠军：球冠〔guān〕 是误配
+        self.assertIsNone(s)
+        self.assertEqual(p.tts, "他拿过足球冠军")
+
+    def test_leave_outside_inventory(self):
+        s, p = self.spot("把电线绑扎好", "扎")
+        self.assertEqual((s.reading, s.source, s.action), ("zā", "lexicon", "leave"))
+        self.assertEqual(p.tts, "把电线绑扎好")
+
+    def test_strict_holds_instead_of_sending_pinyin(self):
+        s, _ = self.spot("管子扎堆", "扎", PronConfig(project_root=self.root, strict=True))
+        self.assertTrue(s.open, s)
+        self.assertIn("没有替身字", s.why)
+
+    def test_hold_entry_round_trip(self):
+        # kepu lexicon add "分量" --action hold 写成 分〔?〕量〔?〕；读回来时“?”被当成错的读音，整条丢掉
+        add_entry("分量", "hold", "重量 fèn / 分量 fēn", "project", self.root)
+        self.assertEqual(Lexicon(self.root, user=False).errors, [])
+        reload_lexicon()
+        s, _ = self.spot("这句话的分量很重", "分")
+        self.assertTrue(s.open and "同形词" in s.why, s.why)
+        with self.assertRaises(ValueError):
+            parse_entry("冠〔?〕军", "force")                   # “?”只给 hold 用，不能送给模型
+
+    def test_lexicon_add_says_what_happens(self):
+        cfg = config.load(self.root)
+        with mock.patch.object(lexicon, "USER_DIR", self.root / "home"):
+            e, _ = add_entry("拧〔nǐng〕紧", "force", "", "project", self.root)
+            out, rc = capture(lint.lexicon_check, e, cfg)
+            self.assertEqual(rc, 0, out)
+            self.assertIn("发给模型：nǐng紧", out)
+            # 个人词典的词条被这个项目的同名词条盖住：在这里不生效，要说出来
+            e, _ = add_entry("扎〔zā〕堆", "force", "", "user", self.root)
+            out, rc = capture(lint.lexicon_check, e, cfg)
+            self.assertEqual(rc, 1, out)
+            self.assertIn("没有生效", out)
+
+    def test_unreadable_line_is_reported(self):
+        with open(self.root / "pron" / "lexicon.tsv", "a", encoding="utf-8") as f:
+            f.write("冠〔?〕军\tforce\n")
+        out, _ = capture(lint.pron_debug, ["冠军"], config.load(self.root))
+        self.assertIn("冠〔?〕军", out)
+        self.assertIn("没有生效", out)
 
 
 class Script(unittest.TestCase):
