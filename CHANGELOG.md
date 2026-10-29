@@ -1,8 +1,10 @@
 # 更新记录
 
-## 未发布
+## 0.2.2 · 2026-10-29
 
-- 开源准备：代码和文档采用 MIT 许可（`LICENSE`，插件目录里也放了一份；`plugin.json` 加了 license、homepage、repository）；`docs/` 里的图片和宣传片保留所有权利（`docs/README.md`）。README 去掉了私有仓库的说明。
+- 开源：代码和文档采用 MIT 许可。`LICENSE` 在仓库根目录和插件目录里各放一份，单独分发的插件 zip 也带着它；`plugin.json` 加了 license、homepage、repository。
+- 素材保留所有权利：`docs/` 里的图片和宣传片来自《ETH 之墙》《地基之下》，不适用 MIT，见 `docs/README.md`。
+- README 加了许可徽章，去掉了私有仓库的说明。
 
 ## 0.2.1 · 2026-10-29
 

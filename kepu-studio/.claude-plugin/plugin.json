@@ -1,6 +1,6 @@
 {
   "name": "kepu-studio",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "displayName": "科普番剧工坊 kepu-studio",
   "description": "动漫 / 动画 / 游戏风中文科普视频的一条龙工作流，合并自《地基之下》（像素 RPG，27 集）与《ETH 之墙》（ManimGL EVA 标题卡，6 期）：立项、taste 美术方向、讲义先行、写稿与分级、一劳永逸的多音字与希腊字母（英文）读音、AI 配音与耳检、两套渲染引擎、多角色审稿、逐字稿与发布包、复盘。",
   "author": { "name": "kepu-studio" },
