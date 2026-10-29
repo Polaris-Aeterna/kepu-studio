@@ -43,6 +43,10 @@ def vendor_toolkit(root: Path) -> Path:
     """Copy (or refresh) the toolkit into <root>/.kepu/toolkit and write the launchers."""
     dst = root / ".kepu" / "toolkit"
     src = PKG.parent
+    if dst.exists() and os.path.samefile(dst, src):
+        # ./kepu runs the project's own copy: removing dst would remove the code being copied, leaving no toolkit
+        raise SystemExit(f"[init] 正在运行的就是 {dst}，不能拿它更新它自己；"
+                         "在项目里运行插件里的 python3 <插件>/toolkit/kepu_run.py init . --upgrade")
     if dst.exists():
         shutil.rmtree(dst)
     shutil.copytree(src, dst, ignore=shutil.ignore_patterns("__pycache__", "*.pyc", "tools"))

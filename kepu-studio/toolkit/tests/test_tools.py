@@ -1,17 +1,20 @@
-"""分镜节奏、花钱记录、响度、系列进度表的测试（v0.2）。
+"""分镜节奏、花钱记录、响度、系列进度表（v0.2）和更新项目工具的测试。
 
     python3 -m unittest discover -s toolkit/tests        # 或者 python3 -m kepu selftest
 """
+import io
+import os
 import shutil
 import subprocess
 import sys
 import tempfile
 import unittest
+from contextlib import redirect_stdout
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 
-from kepu import board, config, loudness, status, voice  # noqa: E402
+from kepu import board, config, loudness, scaffold, status, voice  # noqa: E402
 
 SCRIPT = "# 第 1 期 测试\n\n" + "".join(f"## beat {i:02d} [L1]\n台词：{'这是一句用来估计时长的台词。' * 4}\n画面：一\n\n" for i in range(1, 31))
 
@@ -109,6 +112,25 @@ class Status(unittest.TestCase):
             page = status.write_html(status.collect(cfg), cfg).read_text(encoding="utf-8")
             self.assertIn("测试系列", page)
             self.assertNotIn("__ROWS__", page)
+
+
+class Upgrade(unittest.TestCase):
+    def test_project_copy_does_not_replace_itself(self):
+        # ./kepu init . --upgrade used to delete .kepu/toolkit, the copy it runs from, and then fail to copy it
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            project(root)
+            scaffold.vendor_toolkit(root)
+            env = {**os.environ, "PYTHONPATH": str(root / ".kepu" / "toolkit")}     # what the ./kepu launcher does
+            run = subprocess.run([sys.executable, "-m", "kepu", "init", ".", "--upgrade"], cwd=root, env=env,
+                                 capture_output=True)
+            self.assertNotEqual(run.returncode, 0)
+            self.assertIn(b"kepu_run.py", run.stderr)
+            self.assertTrue((root / ".kepu" / "toolkit" / "kepu" / "__main__.py").exists())
+            out = io.StringIO()
+            with redirect_stdout(out):
+                self.assertEqual(scaffold.init(root, upgrade=True), 0)          # the plugin's copy still upgrades it
+            self.assertIn("工具更新到", out.getvalue())
 
 
 if __name__ == "__main__":
