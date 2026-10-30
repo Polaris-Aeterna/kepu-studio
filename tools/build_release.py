@@ -1,6 +1,6 @@
 """从一个 git 标签打两个发布用的 zip（放在仓库的上一级目录）：
 
-    python3 tools/build_release.py v0.2.2
+    python3 tools/build_release.py v0.2.3
 
   kepu-studio.zip         整个仓库（插件市场 + 插件 + 文档 + 例子）：解压后 claude plugin marketplace add ./kepu-studio
   kepu-studio-plugin.zip  只有插件本体：Claude 桌面版 / Cowork 的 Upload plugin 用
